@@ -174,14 +174,13 @@ export default function NavbarSection() {
               </NavbarLink>
             </NavbarCollapse>
 
-            <Button
+            <a
               href="tel:0465877248"
-              size="sm"
-              className="rounded-xl bg-[#155dfc] font-medium text-white [&>span]:items-center [&>span]:gap-1.5"
+              className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#155dfc] px-4 py-2.5 text-sm font-medium leading-5 text-white shadow-[0px_1px_0.5px_0px_rgba(29,41,61,0.02)] hover:bg-[#1447e6]"
             >
               <PhoneIconWhite className="h-4 w-4" />
               0465877248
-            </Button>
+            </a>
           </div>
         </div>
       </Navbar>
