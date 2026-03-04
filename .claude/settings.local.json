@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create vite@latest . -- --template react-ts)",
+      "Bash(npx create-next-app@latest nextjs-temp --typescript --tailwind --eslint --app --src-dir --no-import-alias --no-turbopack --no-git)",
+      "Bash(npm install flowbite flowbite-react)",
+      "Bash(git init)",
+      "Bash(git add -A)",
+      "Bash(git commit -m \"Initial setup: Next.js + Tailwind + Flowbite React\")",
+      "Bash(git config --global --add safe.directory 'D:/ACSD-Projects/figma to wordpress')"
+    ]
+  }
+}
