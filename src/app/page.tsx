@@ -4,6 +4,7 @@ import CustomersLogos from "@/components/CustomersLogos";
 import ServicesSection from "@/components/ServicesSection";
 import AboutSection from "@/components/AboutSection";
 import WhyChooseUsSection from "@/components/WhyChooseUsSection";
+import HowItWorksSection from "@/components/HowItWorksSection";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <ServicesSection />
       <AboutSection />
       <WhyChooseUsSection />
+      <HowItWorksSection />
     </>
   );
 }
