@@ -1,6 +1,5 @@
 "use client";
 
-import { Button, Label, TextInput, Textarea } from "flowbite-react";
 import Image from "next/image";
 
 export default function HeroSection() {
@@ -21,7 +20,7 @@ export default function HeroSection() {
       {/* Left content */}
       <div className="relative z-10 flex w-[636px] flex-col gap-[52px]">
         <div className="flex flex-col gap-5">
-          <p className="text-base font-semibold uppercase tracking-wider text-[#51a2ff]">
+          <p className="text-base font-semibold uppercase tracking-[0.32px] text-[#51a2ff]">
             AZ Pro Services
           </p>
           <h1 className="text-[60px] font-semibold leading-[1.2] text-white">
@@ -45,11 +44,11 @@ export default function HeroSection() {
             ))}
           </div>
           <div className="flex flex-col gap-0.5">
-            <div className="flex items-center gap-2 text-xl font-semibold">
+            <div className="flex items-center gap-2 text-xl font-semibold leading-[1.3]">
               <span className="text-[#51a2ff]">1K+</span>
               <span className="text-white">clients satisfaits</span>
             </div>
-            <p className="text-base font-semibold text-white">
+            <p className="text-base font-semibold leading-[1.5] text-white">
               Profitez de notre expertise reconnue
             </p>
           </div>
@@ -64,7 +63,7 @@ export default function HeroSection() {
             <h2 className="text-2xl font-semibold leading-[1.3] text-white">
               Formulaire de contact
             </h2>
-            <p className="text-base text-gray-100">
+            <p className="text-base font-normal leading-[1.5] text-[#f4f4f5]">
               Remplissez le formulaire ci-dessous afin qu&apos;un membre de
               notre équipe puisse vous recontacter.
             </p>
@@ -72,58 +71,60 @@ export default function HeroSection() {
 
           {/* Form fields */}
           <form className="flex flex-col gap-4">
-            <div>
-              <Label
+            {/* Email */}
+            <div className="flex flex-col gap-2.5">
+              <label
                 htmlFor="email"
-                className="mb-2.5 text-sm font-medium text-white"
+                className="text-sm font-medium leading-5 text-white"
               >
                 Your email
-              </Label>
-              <TextInput
+              </label>
+              <input
                 id="email"
                 type="email"
                 placeholder="name@flowbite.com"
-                className="[&_input]:rounded-xl [&_input]:border-white/15 [&_input]:bg-white/10 [&_input]:text-white [&_input]:placeholder-[#9f9fa9]"
+                className="w-full rounded-xl border border-white/15 bg-white/10 px-3 py-2.5 text-sm leading-5 text-white placeholder-[#9f9fa9] shadow-[0px_1px_0.5px_0px_rgba(29,41,61,0.02)] outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
               />
             </div>
 
-            <div>
-              <Label
+            {/* Subject */}
+            <div className="flex flex-col gap-2.5">
+              <label
                 htmlFor="subject"
-                className="mb-2.5 text-sm font-medium text-white"
+                className="text-sm font-medium leading-5 text-white"
               >
                 Subject
-              </Label>
-              <TextInput
+              </label>
+              <input
                 id="subject"
                 type="text"
                 placeholder="Enter your subject"
-                className="[&_input]:rounded-xl [&_input]:border-white/15 [&_input]:bg-white/10 [&_input]:text-white [&_input]:placeholder-[#9f9fa9]"
+                className="w-full rounded-xl border border-white/15 bg-white/10 px-3 py-2.5 text-sm leading-5 text-white placeholder-[#9f9fa9] shadow-[0px_1px_0.5px_0px_rgba(29,41,61,0.02)] outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
               />
             </div>
 
-            <div>
-              <Label
+            {/* Message */}
+            <div className="flex flex-col gap-2.5">
+              <label
                 htmlFor="message"
-                className="mb-2.5 text-sm font-medium text-white"
+                className="text-sm font-medium leading-5 text-white"
               >
                 Your message
-              </Label>
-              <Textarea
+              </label>
+              <textarea
                 id="message"
                 rows={5}
-                placeholder=""
-                className="rounded-xl border-white/15 bg-white/10 text-white placeholder-[#9f9fa9]"
+                className="w-full rounded-xl border border-white/15 bg-white/10 p-3.5 text-sm leading-5 text-white placeholder-[#9f9fa9] shadow-[0px_1px_0.5px_0px_rgba(29,41,61,0.02)] outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
               />
-              <p className="mt-2.5 text-xs text-[#9f9fa9]">4/500 words</p>
+              <p className="text-xs leading-5 text-[#9f9fa9]">4/500 words</p>
             </div>
 
-            <Button
+            <button
               type="submit"
-              className="w-full rounded-xl bg-[#155dfc] font-medium"
+              className="w-full rounded-xl bg-[#155dfc] px-4 py-2.5 text-sm font-medium leading-5 text-white shadow-[0px_1px_0.5px_0px_rgba(29,41,61,0.02)] hover:bg-[#1447e6]"
             >
               Send message
-            </Button>
+            </button>
           </form>
         </div>
       </div>
