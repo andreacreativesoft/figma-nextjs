@@ -1,13 +1,11 @@
-import Image from "next/image";
-
 const logos = [
-  { src: "/images/logo-honda.svg", alt: "Honda", w: 129, h: 48 },
-  { src: "/images/logo-elastic.svg", alt: "Elastic", w: 128, h: 48 },
-  { src: "/images/logo-paypal.svg", alt: "PayPal", w: 143, h: 48 },
-  { src: "/images/logo-atlassian.svg", alt: "Atlassian", w: 178, h: 48 },
-  { src: "/images/logo-hubspot.svg", alt: "HubSpot", w: 114, h: 48 },
-  { src: "/images/logo-tesla.svg", alt: "Tesla", w: 153, h: 48 },
-  { src: "/images/logo-adobe.svg", alt: "Adobe", w: 133, h: 48 },
+  { src: "/images/logo-honda.svg", alt: "Honda", w: 129 },
+  { src: "/images/logo-elastic.svg", alt: "Elastic", w: 128 },
+  { src: "/images/logo-paypal.svg", alt: "PayPal", w: 143 },
+  { src: "/images/logo-atlassian.svg", alt: "Atlassian", w: 178 },
+  { src: "/images/logo-hubspot.svg", alt: "HubSpot", w: 114 },
+  { src: "/images/logo-tesla.svg", alt: "Tesla", w: 153 },
+  { src: "/images/logo-adobe.svg", alt: "Adobe", w: 133 },
 ];
 
 export default function CustomersLogos() {
@@ -21,15 +19,14 @@ export default function CustomersLogos() {
         {logos.map((logo) => (
           <div
             key={logo.alt}
-            className="relative flex h-12 items-center justify-center overflow-hidden"
+            className="flex h-12 items-center justify-center"
             style={{ width: logo.w }}
           >
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src={logo.src}
               alt={logo.alt}
-              width={logo.w}
-              height={logo.h}
-              className="object-contain"
+              className="max-h-full w-auto"
             />
           </div>
         ))}
