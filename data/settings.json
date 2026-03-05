@@ -1,0 +1,8 @@
+{
+  "backToTop": true,
+  "recaptchaSiteKey": "",
+  "recaptchaSecretKey": "",
+  "recaptchaEnabled": false,
+  "claudeApiKey": "",
+  "claudeEnabled": false
+}

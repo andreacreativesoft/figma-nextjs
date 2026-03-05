@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import NavbarSection from "@/components/NavbarSection";
 import FooterSection from "@/components/FooterSection";
+import ContactForm from "@/components/ContactForm";
 
 export const metadata: Metadata = {
   title: "Contact - AZ Pro Services | Chauffage, Plomberie & Débouchage",
@@ -239,92 +240,7 @@ export default function ContactPage() {
             {/* Form + Map card */}
             <div className="flex flex-col gap-8 rounded-2xl border border-[#E4E4E7] bg-white p-6 shadow-sm lg:flex-row lg:gap-10 lg:p-10">
               {/* Form */}
-              <div className="flex flex-1 flex-col gap-6">
-                <form
-                  action="https://formsubmit.co/info@azproservices.be"
-                  method="POST"
-                  className="flex flex-col gap-5"
-                >
-                  {/* Name */}
-                  <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium leading-5 text-brand-950">
-                      Nom complet
-                    </label>
-                    <input
-                      name="name"
-                      type="text"
-                      placeholder="Votre nom"
-                      className="w-full rounded-xl border border-[#E4E4E7] bg-[#F4F4F5] px-4 py-3 text-sm text-gray-900 placeholder-[#9F9FA9] outline-none transition focus:border-[#155dfc] focus:ring-2 focus:ring-[#155dfc]/10"
-                    />
-                  </div>
-
-                  {/* Email */}
-                  <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium leading-5 text-brand-950">
-                      Adresse email
-                    </label>
-                    <input
-                      name="email"
-                      type="email"
-                      placeholder="nom@exemple.com"
-                      className="w-full rounded-xl border border-[#E4E4E7] bg-[#F4F4F5] px-4 py-3 text-sm text-gray-900 placeholder-[#9F9FA9] outline-none transition focus:border-[#155dfc] focus:ring-2 focus:ring-[#155dfc]/10"
-                    />
-                  </div>
-
-                  {/* Phone */}
-                  <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium leading-5 text-brand-950">
-                      Numéro de téléphone
-                    </label>
-                    <input
-                      name="phone"
-                      type="tel"
-                      placeholder="04XX XXX XXX"
-                      className="w-full rounded-xl border border-[#E4E4E7] bg-[#F4F4F5] px-4 py-3 text-sm text-gray-900 placeholder-[#9F9FA9] outline-none transition focus:border-[#155dfc] focus:ring-2 focus:ring-[#155dfc]/10"
-                    />
-                  </div>
-
-                  {/* Subject */}
-                  <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium leading-5 text-brand-950">
-                      Sujet
-                    </label>
-                    <select
-                      name="subject"
-                      className="w-full rounded-xl border border-[#E4E4E7] bg-[#F4F4F5] px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-[#155dfc] focus:ring-2 focus:ring-[#155dfc]/10"
-                    >
-                      <option value="">Sélectionnez un sujet</option>
-                      <option value="chauffage">Chauffage</option>
-                      <option value="plomberie">Plomberie</option>
-                      <option value="debouchage">Débouchage</option>
-                      <option value="devis">Demande de devis</option>
-                      <option value="urgence">Dépannage urgent</option>
-                      <option value="autre">Autre</option>
-                    </select>
-                  </div>
-
-                  {/* Message */}
-                  <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium leading-5 text-brand-950">
-                      Votre message
-                    </label>
-                    <textarea
-                      name="message"
-                      rows={5}
-                      placeholder="Décrivez votre besoin..."
-                      className="w-full resize-none rounded-xl border border-[#E4E4E7] bg-[#F4F4F5] px-4 py-3 text-sm text-gray-900 placeholder-[#9F9FA9] outline-none transition focus:border-[#155dfc] focus:ring-2 focus:ring-[#155dfc]/10"
-                    />
-                  </div>
-
-                  {/* Submit */}
-                  <button
-                    type="submit"
-                    className="w-full rounded-xl bg-[#155dfc] px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1447e6]"
-                  >
-                    Envoyer le message
-                  </button>
-                </form>
-              </div>
+              <ContactForm />
 
               {/* Map */}
               <div className="min-h-[400px] flex-1 overflow-hidden rounded-xl lg:min-h-0">

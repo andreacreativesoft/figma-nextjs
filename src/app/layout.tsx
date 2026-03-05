@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ThemeModeScript } from "flowbite-react";
+import BackToTop from "@/components/BackToTop";
 import "./globals.css";
 
 const inter = Inter({
@@ -76,6 +77,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} font-sans antialiased`}>
         {children}
+        <BackToTop />
       </body>
     </html>
   );
