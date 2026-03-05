@@ -13,9 +13,19 @@ const features = [
 
 export default function TrustedServicesSection() {
   return (
-    <section className="bg-brand-950">
-      <div className="mx-auto flex max-w-[1440px]">
-        {/* Left Content */}
+    <section className="relative bg-brand-950">
+      {/* Right side background image */}
+      <div className="absolute inset-y-0 right-0 w-[47%]">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/images/trusted-services.jpg"
+          alt="Service de confiance"
+          className="h-full w-full object-cover"
+        />
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 mx-auto max-w-[1440px]">
         <div className="flex w-[762px] shrink-0 flex-col justify-center gap-[34px] py-24 pl-[72px] pr-[164px]">
           {/* Title */}
           <div className="flex flex-col gap-6">
@@ -66,16 +76,6 @@ export default function TrustedServicesSection() {
             />
             0465877248
           </a>
-        </div>
-
-        {/* Right Image */}
-        <div className="h-[797px] w-[678px] shrink-0 overflow-hidden bg-white">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/images/trusted-services.jpg"
-            alt="Service de confiance"
-            className="h-full w-full object-cover"
-          />
         </div>
       </div>
     </section>
