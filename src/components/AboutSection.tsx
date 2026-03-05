@@ -95,7 +95,7 @@ export default function AboutSection() {
                   alt=""
                   className="h-8 w-8 shrink-0"
                 />
-                <span className="whitespace-pre-wrap text-sm font-semibold leading-[1.5] text-brand-950">
+                <span className="whitespace-pre-wrap text-sm font-semibold leading-[1.5] text-brand-950 lg:text-base">
                   {benefit.text}
                 </span>
               </div>

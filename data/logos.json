@@ -1,0 +1,9 @@
+[
+  { "id": 1, "src": "/images/logo-honda.svg", "alt": "Honda", "w": 129 },
+  { "id": 2, "src": "/images/logo-elastic.svg", "alt": "Elastic", "w": 128 },
+  { "id": 3, "src": "/images/logo-paypal.svg", "alt": "PayPal", "w": 143 },
+  { "id": 4, "src": "/images/logo-atlassian.svg", "alt": "Atlassian", "w": 178 },
+  { "id": 5, "src": "/images/logo-hubspot.svg", "alt": "HubSpot", "w": 114 },
+  { "id": 6, "src": "/images/logo-tesla.svg", "alt": "Tesla", "w": 153 },
+  { "id": 7, "src": "/images/logo-adobe.svg", "alt": "Adobe", "w": 133 }
+]

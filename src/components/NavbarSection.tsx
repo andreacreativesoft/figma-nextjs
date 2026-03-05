@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Navbar,
-  NavbarBrand,
-  NavbarCollapse,
-  NavbarLink,
-  NavbarToggle,
-  Button,
-} from "flowbite-react";
+import { useState } from "react";
 import Image from "next/image";
 
 /* ── Inline SVG icons extracted from Figma ── */
@@ -115,7 +108,32 @@ function PhoneIconWhite({ className = "h-4 w-4" }: { className?: string }) {
   );
 }
 
+function HamburgerIcon() {
+  return (
+    <svg className="h-5 w-5" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg className="h-5 w-5" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+const navLinks = [
+  { label: "Homepage", href: "/" },
+  { label: "About us", href: "/about" },
+  { label: "Our services", href: "/services" },
+  { label: "Contact", href: "/contact" },
+];
+
 export default function NavbarSection() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <header>
       {/* Top bar */}
@@ -146,34 +164,43 @@ export default function NavbarSection() {
       </div>
 
       {/* Main navbar */}
-      <Navbar fluid className="border-b border-gray-200 py-3">
+      <nav className="border-b border-gray-200 bg-white py-3">
         <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between px-4">
-          <NavbarBrand href="/">
-            <span className="whitespace-nowrap text-xl font-bold text-[#155dfc]">
-              PRO SERVICES
-            </span>
-          </NavbarBrand>
+          <a href="/" className="whitespace-nowrap text-xl font-bold text-[#155dfc]">
+            PRO SERVICES
+          </a>
 
-          <div className="flex items-center gap-6">
-            <NavbarToggle />
-            <NavbarCollapse>
-              <NavbarLink href="/" className="text-sm font-medium text-gray-600">
-                Homepage
-              </NavbarLink>
-              <NavbarLink href="/about" className="text-sm font-medium text-gray-600">
-                About us
-              </NavbarLink>
-              <NavbarLink href="/services" className="text-sm font-medium text-gray-600">
-                <span className="flex items-center gap-1.5">
-                  Our services
-                  <ChevronDownIcon className="h-[18px] w-[18px]" />
-                </span>
-              </NavbarLink>
-              <NavbarLink href="/contact" className="text-sm font-medium text-gray-600">
-                Contact
-              </NavbarLink>
-            </NavbarCollapse>
+          {/* Desktop nav links */}
+          <div className="hidden items-center gap-6 lg:flex">
+            {navLinks.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                className="text-sm font-medium text-gray-600 hover:text-gray-900"
+              >
+                {link.label === "Our services" ? (
+                  <span className="flex items-center gap-1.5">
+                    {link.label}
+                    <ChevronDownIcon className="h-[18px] w-[18px]" />
+                  </span>
+                ) : (
+                  link.label
+                )}
+              </a>
+            ))}
+          </div>
 
+          <div className="flex items-center gap-4">
+            {/* Mobile hamburger */}
+            <button
+              onClick={() => setMenuOpen(true)}
+              className="inline-flex items-center justify-center rounded-lg p-2 text-gray-500 hover:bg-gray-100 lg:hidden"
+              aria-label="Open menu"
+            >
+              <HamburgerIcon />
+            </button>
+
+            {/* CTA */}
             <a
               href="tel:0465877248"
               className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#155dfc] px-4 py-2.5 text-sm font-medium leading-5 text-white shadow-[0px_1px_0.5px_0px_rgba(29,41,61,0.02)] hover:bg-[#1447e6]"
@@ -183,7 +210,62 @@ export default function NavbarSection() {
             </a>
           </div>
         </div>
-      </Navbar>
+      </nav>
+
+      {/* Off-canvas mobile menu */}
+      {/* Backdrop */}
+      <div
+        className={`fixed inset-0 z-40 bg-black/50 transition-opacity duration-300 lg:hidden ${
+          menuOpen ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+        onClick={() => setMenuOpen(false)}
+      />
+
+      {/* Drawer */}
+      <div
+        className={`fixed inset-y-0 left-0 z-50 w-72 bg-white shadow-xl transition-transform duration-300 lg:hidden ${
+          menuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="flex h-full flex-col">
+          {/* Drawer header */}
+          <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4">
+            <span className="text-xl font-bold text-[#155dfc]">PRO SERVICES</span>
+            <button
+              onClick={() => setMenuOpen(false)}
+              className="inline-flex items-center justify-center rounded-lg p-2 text-gray-500 hover:bg-gray-100"
+              aria-label="Close menu"
+            >
+              <CloseIcon />
+            </button>
+          </div>
+
+          {/* Drawer links */}
+          <div className="flex flex-col gap-1 px-3 py-4">
+            {navLinks.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                className="rounded-lg px-3 py-2.5 text-base font-medium text-gray-700 hover:bg-gray-100"
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+
+          {/* Drawer CTA */}
+          <div className="mt-auto border-t border-gray-200 px-5 py-4">
+            <a
+              href="tel:0465877248"
+              className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#155dfc] px-4 py-2.5 text-sm font-medium leading-5 text-white shadow-[0px_1px_0.5px_0px_rgba(29,41,61,0.02)] hover:bg-[#1447e6]"
+            >
+              <PhoneIconWhite className="h-4 w-4" />
+              0465877248
+            </a>
+          </div>
+        </div>
+      </div>
     </header>
   );
 }

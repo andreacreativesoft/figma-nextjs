@@ -1,14 +1,25 @@
-const logos = [
-  { src: "/images/logo-honda.svg", alt: "Honda", w: 129 },
-  { src: "/images/logo-elastic.svg", alt: "Elastic", w: 128 },
-  { src: "/images/logo-paypal.svg", alt: "PayPal", w: 143 },
-  { src: "/images/logo-atlassian.svg", alt: "Atlassian", w: 178 },
-  { src: "/images/logo-hubspot.svg", alt: "HubSpot", w: 114 },
-  { src: "/images/logo-tesla.svg", alt: "Tesla", w: 153 },
-  { src: "/images/logo-adobe.svg", alt: "Adobe", w: 133 },
-];
+"use client";
+
+import { useState, useEffect } from "react";
+
+interface Logo {
+  id: number;
+  src: string;
+  alt: string;
+  w: number;
+}
 
 export default function CustomersLogos() {
+  const [logos, setLogos] = useState<Logo[]>([]);
+
+  useEffect(() => {
+    fetch("/api/logos")
+      .then((r) => r.json())
+      .then(setLogos);
+  }, []);
+
+  if (logos.length === 0) return null;
+
   return (
     <section className="bg-white">
       <div className="mx-auto flex max-w-[1440px] flex-col items-center gap-10 overflow-hidden py-14">

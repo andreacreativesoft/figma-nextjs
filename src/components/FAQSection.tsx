@@ -1,32 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const faqs = [
-  {
-    question: "Can I use FlowBite in open-source projects?",
-    answer: [
-      "Generally, it is accepted to use FlowBite in open-source projects, as long as it is not a UI library, a theme, a template, a page-builder that would be considered as an alternative to FlowBite itself.",
-      "With that being said, feel free to use this design kit for your open-source projects.",
-    ],
-  },
-  {
-    question: "Where can I access my download files?",
-    answer: [],
-  },
-  {
-    question: "Is Flowbite compatible with popular frontend frameworks?",
-    answer: [],
-  },
-  {
-    question: "What are the main features of Flowbite?",
-    answer: [],
-  },
-  {
-    question: "Does Flowbite offer pre-built components?",
-    answer: [],
-  },
-];
+interface FAQ {
+  id: number;
+  question: string;
+  answer: string[];
+}
 
 function ChevronIcon({ open }: { open: boolean }) {
   return (
@@ -48,6 +28,15 @@ function ChevronIcon({ open }: { open: boolean }) {
 
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState(0);
+  const [faqs, setFaqs] = useState<FAQ[]>([]);
+
+  useEffect(() => {
+    fetch("/api/faq")
+      .then((r) => r.json())
+      .then(setFaqs);
+  }, []);
+
+  if (faqs.length === 0) return null;
 
   return (
     <section className="bg-white">
@@ -66,7 +55,7 @@ export default function FAQSection() {
           {/* Accordion */}
           <div className="flex w-full flex-col">
             {faqs.map((faq, i) => (
-              <div key={faq.question} className="border-b border-[#E4E4E7]">
+              <div key={faq.id} className="border-b border-[#E4E4E7]">
                 <button
                   onClick={() => setOpenIndex(openIndex === i ? -1 : i)}
                   className="flex w-full items-center gap-6 py-5"

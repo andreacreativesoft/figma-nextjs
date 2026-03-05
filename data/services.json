@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "image": "/images/service-chauffagiste.jpg",
+    "title": "Chauffagiste",
+    "description": "Chauffagiste agréé - Bruxelles, Brabant Wallon, Brabant Flamand",
+    "href": "#"
+  },
+  {
+    "id": 2,
+    "image": "/images/service-plombier.jpg",
+    "title": "Plombier",
+    "description": "Plombier professionnel - Bruxelles, Brabant Wallon, Brabant Flamand",
+    "href": "#"
+  },
+  {
+    "id": 3,
+    "image": "/images/service-deboucheur.jpg",
+    "title": "Déboucheur",
+    "description": "Débouchage expert - Namur",
+    "href": "#"
+  }
+]

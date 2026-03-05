@@ -1,4 +1,28 @@
+"use client";
+
+import { useState, useEffect } from "react";
+
+interface SiteInfo {
+  phone: string;
+  email: string;
+  address: string;
+}
+
 export default function FooterSection() {
+  const [info, setInfo] = useState<SiteInfo>({
+    phone: "0465877248",
+    email: "info@azproservices.be",
+    address: "Chaussée de Ninove 307/1, 1070 Anderlecht",
+  });
+
+  useEffect(() => {
+    fetch("/api/site-info")
+      .then((r) => r.json())
+      .then(setInfo);
+  }, []);
+
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(info.address)}`;
+
   return (
     <footer className="bg-white">
       <div className="mx-auto max-w-[1440px] px-4 py-14 md:px-8 lg:px-[72px]">
@@ -68,12 +92,12 @@ export default function FooterSection() {
                       className="h-5 w-5 shrink-0"
                     />
                     <a
-                      href="https://www.google.com/maps/search/?api=1&query=Chauss%C3%A9e+de+Ninove+307%2F1+1070+Anderlecht"
+                      href={mapsUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-base leading-[1.5] text-[#52525C] hover:text-brand-950"
                     >
-                      Chaussée de Ninove 307/1, 1070 Anderlecht
+                      {info.address}
                     </a>
                   </div>
                   <div className="flex items-center gap-3">
@@ -84,10 +108,10 @@ export default function FooterSection() {
                       className="h-5 w-5 shrink-0"
                     />
                     <a
-                      href="tel:0465877248"
+                      href={`tel:${info.phone}`}
                       className="text-base leading-[1.5] text-[#52525C] hover:text-brand-950"
                     >
-                      0465877248
+                      {info.phone}
                     </a>
                   </div>
                   <div className="flex items-center gap-3">
@@ -98,10 +122,10 @@ export default function FooterSection() {
                       className="h-5 w-5 shrink-0"
                     />
                     <a
-                      href="mailto:info@azproservices.be"
+                      href={`mailto:${info.email}`}
                       className="text-base leading-[1.5] text-[#52525C] hover:text-brand-950"
                     >
-                      info@azproservices.be
+                      {info.email}
                     </a>
                   </div>
                 </div>
