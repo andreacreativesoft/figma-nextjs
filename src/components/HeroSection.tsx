@@ -7,13 +7,24 @@ export default function HeroSection() {
     <section className="relative min-h-0 lg:min-h-[775px]">
       {/* Background image + overlay */}
       <div className="absolute inset-0 z-0">
-        <Image
-          src="/images/hero-bg.jpg"
-          alt="AZ Pro Services - Plombier professionnel"
-          fill
-          className="object-cover"
-          priority
-        />
+        <picture>
+          <source
+            media="(min-width: 768px)"
+            srcSet="/images/hero-bg-desktop.webp 1x, /images/hero-bg-desktop-2x.webp 2x"
+            type="image/webp"
+          />
+          <source
+            srcSet="/images/hero-bg-mobile.webp 1x, /images/hero-bg-mobile-2x.webp 2x"
+            type="image/webp"
+          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/hero-bg.jpg"
+            alt="AZ Pro Services - Plombier professionnel"
+            className="h-full w-full object-cover"
+            fetchPriority="high"
+          />
+        </picture>
         <div className="absolute inset-0 bg-brand-950/80" />
       </div>
 

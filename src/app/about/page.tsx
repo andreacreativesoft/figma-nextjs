@@ -86,12 +86,23 @@ export default function AboutPage() {
       {/* Hero banner */}
       <section className="relative">
         <div className="absolute inset-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/images/contact-bg.jpg"
-            alt=""
-            className="h-full w-full object-cover"
-          />
+          <picture>
+            <source
+              media="(min-width: 768px)"
+              srcSet="/images/contact-bg-desktop.webp"
+              type="image/webp"
+            />
+            <source
+              srcSet="/images/contact-bg-mobile.webp 1x, /images/contact-bg-mobile-2x.webp 2x"
+              type="image/webp"
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/contact-bg.jpg"
+              alt=""
+              className="h-full w-full object-cover"
+            />
+          </picture>
           <div className="absolute inset-0 bg-[rgba(10,53,87,0.85)]" />
         </div>
         <div className="relative z-10 mx-auto max-w-[1440px] px-4 py-20 text-center md:px-8 md:py-28">
@@ -117,12 +128,23 @@ export default function AboutPage() {
             <div className="flex flex-col items-center gap-8 lg:flex-row lg:gap-[132px]">
               {/* Image */}
               <div className="h-[300px] w-full shrink-0 overflow-hidden rounded-lg lg:h-[520px] lg:w-[526px]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/images/about-image.jpg"
-                  alt="AZ Pro Services"
-                  className="h-full w-full object-cover"
-                />
+                <picture>
+                  <source
+                    media="(min-width: 1024px)"
+                    srcSet="/images/about-image-desktop.webp 1x, /images/about-image-desktop-2x.webp 2x"
+                    type="image/webp"
+                  />
+                  <source
+                    srcSet="/images/about-image-mobile.webp 1x, /images/about-image-mobile-2x.webp 2x"
+                    type="image/webp"
+                  />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/images/about-image.jpg"
+                    alt="AZ Pro Services"
+                    className="h-full w-full object-cover"
+                  />
+                </picture>
               </div>
 
               {/* Content */}
@@ -202,12 +224,18 @@ export default function AboutPage() {
       {/* Values section */}
       <section className="relative bg-brand-950">
         <div className="absolute inset-y-0 right-0 hidden w-[47%] lg:block">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/images/why-choose-us.jpg"
-            alt="Pourquoi choisir AZ Pro Services"
-            className="h-full w-full object-cover"
-          />
+          <picture>
+            <source
+              srcSet="/images/why-choose-us-desktop.webp 1x, /images/why-choose-us-desktop-2x.webp 2x"
+              type="image/webp"
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/why-choose-us.jpg"
+              alt="Pourquoi choisir AZ Pro Services"
+              className="h-full w-full object-cover"
+            />
+          </picture>
         </div>
 
         <div className="relative z-10 mx-auto max-w-[1440px]">

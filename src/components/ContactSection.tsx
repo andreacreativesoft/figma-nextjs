@@ -3,12 +3,23 @@ export default function ContactSection() {
     <section className="relative">
       {/* Background image + overlay */}
       <div className="absolute inset-0">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/images/contact-bg.jpg"
-          alt=""
-          className="h-full w-full object-cover"
-        />
+        <picture>
+          <source
+            media="(min-width: 768px)"
+            srcSet="/images/contact-bg-desktop.webp"
+            type="image/webp"
+          />
+          <source
+            srcSet="/images/contact-bg-mobile.webp 1x, /images/contact-bg-mobile-2x.webp 2x"
+            type="image/webp"
+          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/contact-bg.jpg"
+            alt=""
+            className="h-full w-full object-cover"
+          />
+        </picture>
         <div className="absolute inset-0 bg-[rgba(10,53,87,0.8)]" />
       </div>
 

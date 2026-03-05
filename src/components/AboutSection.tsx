@@ -26,12 +26,23 @@ export default function AboutSection() {
         <div className="flex flex-col items-center gap-8 lg:flex-row lg:gap-[132px]">
           {/* Image */}
           <div className="h-[300px] w-full shrink-0 overflow-hidden rounded-lg lg:h-[520px] lg:w-[526px]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/about-image.jpg"
-              alt="AZ Pro Services"
-              className="h-full w-full object-cover"
-            />
+            <picture>
+              <source
+                media="(min-width: 1024px)"
+                srcSet="/images/about-image-desktop.webp 1x, /images/about-image-desktop-2x.webp 2x"
+                type="image/webp"
+              />
+              <source
+                srcSet="/images/about-image-mobile.webp 1x, /images/about-image-mobile-2x.webp 2x"
+                type="image/webp"
+              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/about-image.jpg"
+                alt="AZ Pro Services"
+                className="h-full w-full object-cover"
+              />
+            </picture>
           </div>
 
           {/* Content */}
