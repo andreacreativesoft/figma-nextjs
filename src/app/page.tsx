@@ -8,6 +8,8 @@ import HowItWorksSection from "@/components/HowItWorksSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import TrustedServicesSection from "@/components/TrustedServicesSection";
 import FAQSection from "@/components/FAQSection";
+import ContactSection from "@/components/ContactSection";
+import FooterSection from "@/components/FooterSection";
 
 export default function Home() {
   return (
@@ -22,6 +24,8 @@ export default function Home() {
       <TestimonialsSection />
       <TrustedServicesSection />
       <FAQSection />
+      <ContactSection />
+      <FooterSection />
     </>
   );
 }
