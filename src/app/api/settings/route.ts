@@ -13,6 +13,7 @@ export interface SiteSettings {
   googleTagId: string;
   googleAnalyticsId: string;
   customHeadCode: string;
+  blogEnabled: boolean;
 }
 
 export async function GET() {

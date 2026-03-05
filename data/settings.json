@@ -8,5 +8,6 @@
   "facebookPixelId": "",
   "googleTagId": "",
   "googleAnalyticsId": "",
-  "customHeadCode": ""
+  "customHeadCode": "",
+  "blogEnabled": false
 }

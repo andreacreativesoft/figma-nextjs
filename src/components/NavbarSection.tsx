@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
 /* ── Inline SVG icons extracted from Figma ── */
@@ -124,7 +124,7 @@ function CloseIcon() {
   );
 }
 
-const navLinks = [
+const baseNavLinks = [
   { label: "Homepage", href: "/" },
   { label: "About us", href: "/about" },
   { label: "Our services", href: "/services" },
@@ -133,6 +133,22 @@ const navLinks = [
 
 export default function NavbarSection() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [navLinks, setNavLinks] = useState(baseNavLinks);
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.blogEnabled) {
+          setNavLinks([
+            ...baseNavLinks.slice(0, 3),
+            { label: "Blog", href: "/blog" },
+            ...baseNavLinks.slice(3),
+          ]);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <header>
