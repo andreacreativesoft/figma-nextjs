@@ -23,7 +23,8 @@ const features = [
 
 export default function WhyChooseUsSection() {
   return (
-    <section className="flex bg-brand-950">
+    <section className="bg-brand-950">
+      <div className="mx-auto flex max-w-[1440px]">
       {/* Left Content */}
       <div className="flex w-[762px] shrink-0 flex-col justify-center gap-[34px] overflow-hidden py-24 pl-[72px] pr-[164px]">
         {/* Title */}
@@ -88,6 +89,7 @@ export default function WhyChooseUsSection() {
           alt="Pourquoi choisir AZ Pro Services"
           className="h-full w-full object-cover"
         />
+      </div>
       </div>
     </section>
   );

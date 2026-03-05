@@ -10,7 +10,8 @@ const logos = [
 
 export default function CustomersLogos() {
   return (
-    <section className="flex flex-col items-center gap-10 bg-white py-14">
+    <section className="bg-white">
+      <div className="mx-auto flex max-w-[1440px] flex-col items-center gap-10 py-14">
       <h2 className="text-2xl font-semibold leading-[1.3] text-brand-950">
         Expert certifié multi-marques de{" "}
         <span className="text-[#155dfc]">chauffage et plomberie</span>
@@ -30,6 +31,7 @@ export default function CustomersLogos() {
             />
           </div>
         ))}
+      </div>
       </div>
     </section>
   );

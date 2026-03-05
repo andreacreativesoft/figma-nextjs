@@ -21,7 +21,8 @@ const steps = [
 
 export default function HowItWorksSection() {
   return (
-    <section className="bg-white px-[182px] py-24">
+    <section className="bg-white">
+      <div className="mx-auto max-w-[1440px] px-[182px] py-24">
       <div className="flex flex-col items-center gap-[72px]">
         {/* Header */}
         <div className="flex flex-col items-center gap-8 text-center">
@@ -64,6 +65,7 @@ export default function HowItWorksSection() {
             </div>
           ))}
         </div>
+      </div>
       </div>
     </section>
   );

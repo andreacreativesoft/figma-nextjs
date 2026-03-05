@@ -19,7 +19,8 @@ const benefits = [
 
 export default function AboutSection() {
   return (
-    <section className="bg-white px-[72px] py-24">
+    <section className="bg-white">
+      <div className="mx-auto max-w-[1440px] px-[72px] py-24">
       <div className="flex flex-col gap-[72px]">
         {/* Top: Image + Content */}
         <div className="flex items-center gap-[132px]">
@@ -101,6 +102,7 @@ export default function AboutSection() {
             ))}
           </div>
         </div>
+      </div>
       </div>
     </section>
   );

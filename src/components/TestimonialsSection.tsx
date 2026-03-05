@@ -48,7 +48,8 @@ function StarIcon() {
 
 export default function TestimonialsSection() {
   return (
-    <section className="bg-[#F4F4F5] px-[182px] py-24">
+    <section className="bg-[#F4F4F5]">
+      <div className="mx-auto max-w-[1440px] px-[182px] py-24">
       <div className="flex flex-col items-center gap-16">
         {/* Header */}
         <div className="flex flex-col items-center gap-4">
@@ -119,6 +120,7 @@ export default function TestimonialsSection() {
             ))}
           </div>
         </div>
+      </div>
       </div>
     </section>
   );

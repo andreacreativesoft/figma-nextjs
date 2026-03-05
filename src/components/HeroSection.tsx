@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function HeroSection() {
   return (
-    <section className="relative flex min-h-[775px] items-center justify-between px-[72px] py-[85px]">
+    <section className="relative min-h-[775px]">
       {/* Background image + overlay */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -17,8 +17,9 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-brand-950/80" />
       </div>
 
+      <div className="relative z-10 mx-auto flex max-w-[1440px] items-center justify-between px-[72px] py-[85px]" style={{ minHeight: '775px' }}>
       {/* Left content */}
-      <div className="relative z-10 flex w-[636px] flex-col gap-[52px]">
+      <div className="flex w-[636px] flex-col gap-[52px]">
         <div className="flex flex-col gap-5">
           <p className="text-base font-semibold uppercase tracking-[0.32px] text-[#51a2ff]">
             AZ Pro Services
@@ -56,7 +57,7 @@ export default function HeroSection() {
       </div>
 
       {/* Contact form */}
-      <div className="relative z-10 w-[493px] shrink-0 overflow-hidden rounded-lg border border-[#1c398e] bg-brand-950 p-8 shadow-md">
+      <div className="w-[493px] shrink-0 overflow-hidden rounded-lg border border-[#1c398e] bg-brand-950 p-8 shadow-md">
         <div className="flex flex-col gap-8">
           {/* Form header */}
           <div className="flex flex-col gap-2.5">
@@ -127,6 +128,7 @@ export default function HeroSection() {
             </button>
           </form>
         </div>
+      </div>
       </div>
     </section>
   );

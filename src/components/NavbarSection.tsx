@@ -120,7 +120,7 @@ export default function NavbarSection() {
     <header>
       {/* Top bar */}
       <div className="border-b border-gray-200 bg-gray-50 py-2.5">
-        <div className="mx-auto flex max-w-screen-xl items-center justify-between px-4">
+        <div className="mx-auto flex max-w-[1440px] items-center justify-between px-4">
           <div className="flex items-center gap-4">
             <a
               href="tel:+12345678"
@@ -147,7 +147,7 @@ export default function NavbarSection() {
 
       {/* Main navbar */}
       <Navbar fluid className="border-b border-gray-200 py-3">
-        <div className="mx-auto flex w-full max-w-screen-xl items-center justify-between px-4">
+        <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between px-4">
           <NavbarBrand href="/">
             <span className="whitespace-nowrap text-xl font-bold text-[#155dfc]">
               PRO SERVICES
