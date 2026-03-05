@@ -19,8 +19,15 @@
 
 body {
   font-family: var(--font-sans);
+  font-size: 15px;
   color: #52525c;
   background: #ffffff;
+}
+
+@media (min-width: 768px) {
+  body {
+    font-size: 16px;
+  }
 }
 
 @keyframes scroll {
