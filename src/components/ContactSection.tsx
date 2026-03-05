@@ -1,4 +1,37 @@
+"use client";
+
+import { useState } from "react";
+
 export default function ContactSection() {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
+  });
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setStatus("sending");
+    try {
+      const res = await fetch("/api/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (res.ok) {
+        setStatus("sent");
+        setForm({ name: "", email: "", phone: "", subject: "", message: "" });
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
+  }
+
   return (
     <section className="relative">
       {/* Background image + overlay */}
@@ -48,57 +81,84 @@ export default function ContactSection() {
                 </p>
               </div>
 
-              {/* Form Fields */}
-              <form action="https://formsubmit.co/info@azproservices.be" method="POST" className="flex flex-col gap-4">
-                {/* Email */}
-                <div className="flex flex-col gap-2.5">
-                  <label className="text-sm font-medium leading-5 text-white">
-                    Your email
-                  </label>
-                  <input
-                    name="email"
-                    type="email"
-                    placeholder="name@flowbite.com"
-                    className="w-full rounded-xl border border-white/15 bg-white/10 px-3 py-2.5 text-sm leading-5 text-white placeholder-[#9F9FA9] shadow-[0px_1px_0.5px_0px_rgba(29,41,61,0.02)] outline-none focus:border-white/30"
-                  />
+              {status === "sent" ? (
+                <div className="flex flex-col items-center gap-4 py-8 text-center">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-green-500/20">
+                    <svg className="h-7 w-7 text-green-400" viewBox="0 0 20 20" fill="none">
+                      <path d="M4 10l4 4 8-8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                  <p className="text-lg font-semibold text-white">Message envoyé !</p>
+                  <p className="text-sm text-[#F4F4F5]/70">Nous vous recontacterons rapidement.</p>
+                  <button
+                    onClick={() => setStatus("idle")}
+                    className="mt-2 rounded-xl border border-white/20 px-5 py-2 text-sm font-medium text-white transition hover:bg-white/10"
+                  >
+                    Envoyer un autre message
+                  </button>
                 </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                  {/* Email */}
+                  <div className="flex flex-col gap-2.5">
+                    <label className="text-sm font-medium leading-5 text-white">
+                      Your email
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={form.email}
+                      onChange={(e) => setForm({ ...form, email: e.target.value })}
+                      placeholder="name@flowbite.com"
+                      className="w-full rounded-xl border border-white/15 bg-white/10 px-3 py-2.5 text-sm leading-5 text-white placeholder-[#9F9FA9] shadow-[0px_1px_0.5px_0px_rgba(29,41,61,0.02)] outline-none focus:border-white/30"
+                    />
+                  </div>
 
-                {/* Subject */}
-                <div className="flex flex-col gap-2.5">
-                  <label className="text-sm font-medium leading-5 text-white">
-                    Subject
-                  </label>
-                  <input
-                    name="subject"
-                    type="text"
-                    placeholder="Enter your subject"
-                    className="w-full rounded-xl border border-white/15 bg-white/10 px-3 py-2.5 text-sm leading-5 text-white placeholder-[#9F9FA9] shadow-[0px_1px_0.5px_0px_rgba(29,41,61,0.02)] outline-none focus:border-white/30"
-                  />
-                </div>
+                  {/* Subject */}
+                  <div className="flex flex-col gap-2.5">
+                    <label className="text-sm font-medium leading-5 text-white">
+                      Subject
+                    </label>
+                    <input
+                      type="text"
+                      value={form.subject}
+                      onChange={(e) => setForm({ ...form, subject: e.target.value })}
+                      placeholder="Enter your subject"
+                      className="w-full rounded-xl border border-white/15 bg-white/10 px-3 py-2.5 text-sm leading-5 text-white placeholder-[#9F9FA9] shadow-[0px_1px_0.5px_0px_rgba(29,41,61,0.02)] outline-none focus:border-white/30"
+                    />
+                  </div>
 
-                {/* Message */}
-                <div className="flex flex-col gap-2.5">
-                  <label className="text-sm font-medium leading-5 text-white">
-                    Your message
-                  </label>
-                  <textarea
-                    name="message"
-                    rows={4}
-                    className="w-full rounded-xl border border-white/15 bg-white/10 p-3.5 text-sm leading-5 text-white placeholder-[#9F9FA9] shadow-[0px_1px_0.5px_0px_rgba(29,41,61,0.02)] outline-none focus:border-white/30"
-                  />
-                  <span className="text-xs leading-5 text-[#9F9FA9]">
-                    4/500 words
-                  </span>
-                </div>
+                  {/* Message */}
+                  <div className="flex flex-col gap-2.5">
+                    <label className="text-sm font-medium leading-5 text-white">
+                      Your message
+                    </label>
+                    <textarea
+                      required
+                      rows={4}
+                      value={form.message}
+                      onChange={(e) => setForm({ ...form, message: e.target.value })}
+                      className="w-full rounded-xl border border-white/15 bg-white/10 p-3.5 text-sm leading-5 text-white placeholder-[#9F9FA9] shadow-[0px_1px_0.5px_0px_rgba(29,41,61,0.02)] outline-none focus:border-white/30"
+                    />
+                    <span className="text-xs leading-5 text-[#9F9FA9]">
+                      4/500 words
+                    </span>
+                  </div>
 
-                {/* Submit */}
-                <button
-                  type="submit"
-                  className="w-full rounded-xl bg-[#155dfc] px-4 py-2.5 text-sm font-medium leading-5 text-white shadow-[0px_1px_0.5px_0px_rgba(29,41,61,0.02)] hover:bg-[#1447e6]"
-                >
-                  Send message
-                </button>
-              </form>
+                  {status === "error" && (
+                    <p className="text-sm text-red-400">Une erreur est survenue. Veuillez réessayer.</p>
+                  )}
+
+                  {/* Submit */}
+                  <button
+                    type="submit"
+                    disabled={status === "sending"}
+                    className="w-full rounded-xl bg-[#155dfc] px-4 py-2.5 text-sm font-medium leading-5 text-white shadow-[0px_1px_0.5px_0px_rgba(29,41,61,0.02)] hover:bg-[#1447e6] disabled:opacity-50"
+                  >
+                    {status === "sending" ? "Sending..." : "Send message"}
+                  </button>
+                </form>
+              )}
             </div>
 
             {/* Map */}

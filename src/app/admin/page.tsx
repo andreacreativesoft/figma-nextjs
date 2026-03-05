@@ -50,6 +50,30 @@ function IconLogos() {
     </svg>
   );
 }
+function IconMessages() {
+  return (
+    <svg className="h-5 w-5" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v7a2 2 0 01-2 2H6l-4 4V5z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M6 7h8M6 10h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  );
+}
+function IconReply() {
+  return (
+    <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M7 8L3 12l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M3 12h10a4 4 0 014 4v1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+function IconEye() {
+  return (
+    <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M1 10s3.5-7 9-7 9 7 9 7-3.5 7-9 7-9-7-9-7z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="10" cy="10" r="3" stroke="currentColor" strokeWidth="1.5"/>
+    </svg>
+  );
+}
 function IconSettings() {
   return (
     <svg className="h-5 w-5" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -901,8 +925,353 @@ function SiteInfoManager() {
   );
 }
 
+/* ─── Messages Manager ─── */
+interface ContactMessage {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  subject: string;
+  message: string;
+  status: "new" | "read" | "replied";
+  createdAt: string;
+  reply?: string;
+  repliedAt?: string;
+}
+
+const STATUS_CONFIG = {
+  new: {
+    label: "New",
+    bg: "bg-red-50",
+    text: "text-red-700",
+    ring: "ring-red-200",
+    dot: "bg-red-500",
+    border: "border-l-red-500",
+  },
+  read: {
+    label: "Read",
+    bg: "bg-amber-50",
+    text: "text-amber-700",
+    ring: "ring-amber-200",
+    dot: "bg-amber-500",
+    border: "border-l-amber-500",
+  },
+  replied: {
+    label: "Replied",
+    bg: "bg-green-50",
+    text: "text-green-700",
+    ring: "ring-green-200",
+    dot: "bg-green-500",
+    border: "border-l-green-500",
+  },
+};
+
+function MessagesManager() {
+  const [messages, setMessages] = useState<ContactMessage[]>([]);
+  const [filter, setFilter] = useState<"all" | "new" | "read" | "replied">("all");
+  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [replyText, setReplyText] = useState("");
+  const [replying, setReplying] = useState(false);
+  const { toast, showToast } = useSaveToast();
+
+  useEffect(() => {
+    loadMessages();
+  }, []);
+
+  async function loadMessages() {
+    const res = await fetch("/api/messages");
+    if (res.ok) {
+      const data = await res.json();
+      setMessages(data);
+    }
+  }
+
+  async function markAsRead(id: number) {
+    await fetch("/api/messages", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, status: "read" }),
+    });
+    setMessages(messages.map((m) => (m.id === id ? { ...m, status: "read" as const } : m)));
+  }
+
+  async function sendReply(id: number) {
+    if (!replyText.trim()) return;
+    setReplying(true);
+    await fetch("/api/messages", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, reply: replyText }),
+    });
+    setMessages(
+      messages.map((m) =>
+        m.id === id
+          ? { ...m, status: "replied" as const, reply: replyText, repliedAt: new Date().toISOString() }
+          : m
+      )
+    );
+    setReplyText("");
+    setReplying(false);
+    showToast("Reply saved successfully");
+  }
+
+  async function deleteMessage(id: number) {
+    await fetch("/api/messages", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+    setMessages(messages.filter((m) => m.id !== id));
+    if (expandedId === id) setExpandedId(null);
+    showToast("Message deleted");
+  }
+
+  function toggleExpand(msg: ContactMessage) {
+    if (expandedId === msg.id) {
+      setExpandedId(null);
+      setReplyText("");
+    } else {
+      setExpandedId(msg.id);
+      setReplyText(msg.reply || "");
+      if (msg.status === "new") markAsRead(msg.id);
+    }
+  }
+
+  const filtered = filter === "all" ? messages : messages.filter((m) => m.status === filter);
+  const counts = {
+    all: messages.length,
+    new: messages.filter((m) => m.status === "new").length,
+    read: messages.filter((m) => m.status === "read").length,
+    replied: messages.filter((m) => m.status === "replied").length,
+  };
+
+  function formatDate(iso: string) {
+    const d = new Date(iso);
+    return d.toLocaleDateString("fr-BE", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
+
+  return (
+    <div className="flex flex-col gap-6">
+      {/* Header */}
+      <div className="flex items-start justify-between">
+        <div>
+          <h2 className="text-xl font-bold text-gray-900">Contact Messages</h2>
+          <p className="mt-1 text-sm text-gray-500">
+            View and reply to messages from your website contact form
+          </p>
+        </div>
+        <button
+          onClick={loadMessages}
+          className="inline-flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50"
+        >
+          <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none">
+            <path d="M17.65 6.35A8 8 0 1 0 19 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" transform="translate(-1 -1)"/>
+            <path d="M18 2v5h-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" transform="translate(-1 -1)"/>
+          </svg>
+          Refresh
+        </button>
+      </div>
+
+      {/* Filter tabs */}
+      <div className="flex gap-2">
+        {(["all", "new", "read", "replied"] as const).map((f) => (
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition ${
+              filter === f
+                ? "bg-[#155dfc]/10 text-[#155dfc]"
+                : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+            }`}
+          >
+            {f === "all" ? "All" : STATUS_CONFIG[f].label}
+            <span
+              className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+                filter === f
+                  ? "bg-[#155dfc]/20 text-[#155dfc]"
+                  : f === "new" && counts.new > 0
+                  ? "bg-red-100 text-red-700"
+                  : "bg-gray-100 text-gray-500"
+              }`}
+            >
+              {counts[f]}
+            </span>
+          </button>
+        ))}
+      </div>
+
+      {/* Messages list */}
+      {filtered.length === 0 ? (
+        <div className="flex flex-col items-center gap-3 rounded-2xl border border-gray-100 bg-white py-16 text-center">
+          <div className="text-gray-200">
+            <IconMessages />
+          </div>
+          <p className="text-sm text-gray-400">No messages yet</p>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {filtered.map((msg) => {
+            const cfg = STATUS_CONFIG[msg.status];
+            const isExpanded = expandedId === msg.id;
+
+            return (
+              <div
+                key={msg.id}
+                className={`rounded-2xl border border-l-4 bg-white shadow-sm transition ${cfg.border} ${
+                  isExpanded ? "shadow-md" : "hover:shadow-md"
+                }`}
+              >
+                {/* Message header row */}
+                <button
+                  onClick={() => toggleExpand(msg)}
+                  className="flex w-full items-center gap-4 p-5 text-left"
+                >
+                  {/* Status dot */}
+                  <div className={`h-2.5 w-2.5 shrink-0 rounded-full ${cfg.dot}`} />
+
+                  {/* Sender info */}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className={`font-semibold text-gray-900 ${msg.status === "new" ? "text-base" : "text-sm"}`}>
+                        {msg.name}
+                      </span>
+                      <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ${cfg.bg} ${cfg.text} ${cfg.ring}`}>
+                        {cfg.label}
+                      </span>
+                    </div>
+                    <p className="mt-0.5 truncate text-sm text-gray-500">
+                      {msg.subject ? `${msg.subject} — ` : ""}
+                      {msg.message.slice(0, 100)}
+                      {msg.message.length > 100 ? "..." : ""}
+                    </p>
+                  </div>
+
+                  {/* Date */}
+                  <span className="shrink-0 text-xs text-gray-400">
+                    {formatDate(msg.createdAt)}
+                  </span>
+
+                  {/* Expand arrow */}
+                  <svg
+                    className={`h-4 w-4 shrink-0 text-gray-300 transition ${isExpanded ? "rotate-180" : ""}`}
+                    viewBox="0 0 20 20"
+                    fill="none"
+                  >
+                    <path d="M5 7l5 5 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+
+                {/* Expanded content */}
+                {isExpanded && (
+                  <div className="border-t border-gray-100 px-5 pb-5">
+                    {/* Contact details */}
+                    <div className="mt-4 flex flex-wrap gap-4 text-sm">
+                      <div className="flex items-center gap-1.5 text-gray-500">
+                        <svg className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="none">
+                          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" transform="translate(-1 -1) scale(0.85)"/>
+                          <path d="m22 6-10 7L2 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" transform="translate(-1 -1) scale(0.85)"/>
+                        </svg>
+                        {msg.email}
+                      </div>
+                      {msg.phone && (
+                        <div className="flex items-center gap-1.5 text-gray-500">
+                          <svg className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="none">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" transform="translate(-1 -1) scale(0.85)"/>
+                          </svg>
+                          {msg.phone}
+                        </div>
+                      )}
+                      {msg.subject && (
+                        <div className="flex items-center gap-1.5 text-gray-500">
+                          Subject: <span className="font-medium text-gray-700">{msg.subject}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Full message */}
+                    <div className="mt-4 rounded-xl bg-gray-50 p-4 text-sm leading-relaxed text-gray-700 whitespace-pre-wrap">
+                      {msg.message}
+                    </div>
+
+                    {/* Previous reply */}
+                    {msg.reply && (
+                      <div className="mt-3 rounded-xl bg-green-50 p-4">
+                        <div className="mb-2 flex items-center gap-1.5 text-xs font-medium text-green-700">
+                          <IconReply />
+                          Your reply {msg.repliedAt && `— ${formatDate(msg.repliedAt)}`}
+                        </div>
+                        <p className="text-sm leading-relaxed text-green-800 whitespace-pre-wrap">{msg.reply}</p>
+                      </div>
+                    )}
+
+                    {/* Reply textarea */}
+                    <div className="mt-4">
+                      <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-gray-400">
+                        {msg.reply ? "Update reply" : "Write a reply"}
+                      </label>
+                      <textarea
+                        value={replyText}
+                        onChange={(e) => setReplyText(e.target.value)}
+                        rows={3}
+                        placeholder="Type your reply..."
+                        className="w-full resize-none rounded-xl border border-gray-100 bg-gray-50/50 px-4 py-3 text-sm text-gray-700 placeholder-gray-300 outline-none transition focus:border-[#155dfc] focus:ring-2 focus:ring-[#155dfc]/10"
+                      />
+                    </div>
+
+                    {/* Action buttons */}
+                    <div className="mt-3 flex items-center justify-between">
+                      <button
+                        onClick={() => deleteMessage(msg.id)}
+                        className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-gray-400 transition hover:bg-red-50 hover:text-red-600"
+                      >
+                        <IconTrash />
+                        Delete
+                      </button>
+                      <div className="flex gap-2">
+                        {msg.status !== "read" && msg.status !== "new" ? null : (
+                          <a
+                            href={`mailto:${msg.email}?subject=Re: ${msg.subject || "Your message"}`}
+                            className="inline-flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs font-medium text-gray-700 shadow-sm transition hover:bg-gray-50"
+                          >
+                            <IconReply />
+                            Email directly
+                          </a>
+                        )}
+                        <button
+                          onClick={() => sendReply(msg.id)}
+                          disabled={!replyText.trim() || replying}
+                          className="inline-flex items-center gap-1.5 rounded-xl bg-[#155dfc] px-5 py-2 text-xs font-medium text-white shadow-sm shadow-[#155dfc]/20 transition hover:bg-[#1447e6] disabled:opacity-50"
+                        >
+                          {replying ? (
+                            <span className="h-3 w-3 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                          ) : (
+                            <IconReply />
+                          )}
+                          {msg.reply ? "Update reply" : "Save reply"}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+      <Toast {...toast} />
+    </div>
+  );
+}
+
 /* ─── Admin Dashboard ─── */
 const tabs = [
+  { key: "messages" as const, label: "Messages", icon: IconMessages },
   { key: "faq" as const, label: "FAQ", icon: IconFaq },
   { key: "services" as const, label: "Services", icon: IconServices },
   { key: "logos" as const, label: "Logos", icon: IconLogos },
@@ -913,7 +1282,7 @@ type Tab = (typeof tabs)[number]["key"];
 
 export default function AdminPage() {
   const [authenticated, setAuthenticated] = useState<boolean | null>(null);
-  const [tab, setTab] = useState<Tab>("faq");
+  const [tab, setTab] = useState<Tab>("messages");
 
   useEffect(() => {
     fetch("/api/auth")
@@ -994,6 +1363,7 @@ export default function AdminPage() {
       {/* Main content */}
       <main className="ml-64 flex-1 px-8 py-8">
         <div className="mx-auto max-w-4xl">
+          {tab === "messages" && <MessagesManager />}
           {tab === "faq" && <FAQManager />}
           {tab === "services" && <ServicesManager />}
           {tab === "logos" && <LogosManager />}
