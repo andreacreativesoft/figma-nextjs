@@ -1303,6 +1303,10 @@ interface SiteSettings {
   recaptchaEnabled: boolean;
   claudeApiKey: string;
   claudeEnabled: boolean;
+  facebookPixelId: string;
+  googleTagId: string;
+  googleAnalyticsId: string;
+  customHeadCode: string;
 }
 
 interface LinkResult {
@@ -1328,6 +1332,10 @@ function ToolsManager() {
     recaptchaEnabled: false,
     claudeApiKey: "",
     claudeEnabled: false,
+    facebookPixelId: "",
+    googleTagId: "",
+    googleAnalyticsId: "",
+    customHeadCode: "",
   });
   const [saving, setSaving] = useState(false);
   const [linkResults, setLinkResults] = useState<LinkResult[]>([]);
@@ -1397,6 +1405,96 @@ function ToolsManager() {
               } mt-1`}
             />
           </button>
+        </div>
+      </div>
+
+      {/* Tracking & Analytics */}
+      <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+        <div className="mb-5">
+          <h3 className="text-sm font-semibold text-gray-900">Tracking & Analytics</h3>
+          <p className="mt-0.5 text-xs text-gray-500">Add Facebook Pixel, Google Tag Manager, Google Analytics, and custom scripts</p>
+        </div>
+
+        <div className="flex flex-col gap-5">
+          {/* Facebook Pixel */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+              Facebook Pixel ID
+            </label>
+            <div className="flex items-center gap-2">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#1877F2]/10">
+                <svg className="h-4 w-4 text-[#1877F2]" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+              </div>
+              <input
+                type="text"
+                value={settings.facebookPixelId}
+                onChange={(e) => setSettings({ ...settings, facebookPixelId: e.target.value })}
+                placeholder="e.g. 123456789012345"
+                className="flex-1 rounded-xl border border-gray-100 bg-gray-50/50 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-300 outline-none transition focus:border-[#155dfc] focus:ring-2 focus:ring-[#155dfc]/10"
+              />
+            </div>
+          </div>
+
+          {/* Google Tag Manager */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+              Google Tag Manager ID
+            </label>
+            <div className="flex items-center gap-2">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#4285F4]/10">
+                <svg className="h-4 w-4 text-[#4285F4]" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0L1.608 6v12L12 24l10.392-6V6L12 0zm-1.2 17.64L6 14.04V9.96l4.8 3.6v4.08zm1.2-5.28L7.2 8.76l4.8-3.6 4.8 3.6-4.8 3.6zm6 1.68l-4.8 3.6v-4.08l4.8-3.6v4.08z"/>
+                </svg>
+              </div>
+              <input
+                type="text"
+                value={settings.googleTagId}
+                onChange={(e) => setSettings({ ...settings, googleTagId: e.target.value })}
+                placeholder="e.g. GTM-XXXXXXX"
+                className="flex-1 rounded-xl border border-gray-100 bg-gray-50/50 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-300 outline-none transition focus:border-[#155dfc] focus:ring-2 focus:ring-[#155dfc]/10"
+              />
+            </div>
+          </div>
+
+          {/* Google Analytics */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+              Google Analytics ID
+            </label>
+            <div className="flex items-center gap-2">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#E37400]/10">
+                <svg className="h-4 w-4 text-[#E37400]" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M22.84 2.998V20.99c0 .558-.176 1.028-.527 1.395A1.87 1.87 0 0120.87 23a1.87 1.87 0 01-1.443-.616 2.017 2.017 0 01-.527-1.395V2.998c0-.557.175-1.027.527-1.394A1.869 1.869 0 0120.87 1c.557 0 1.038.201 1.443.604.351.367.527.837.527 1.394zm-8.42 8.997v8.993c0 .558-.176 1.028-.527 1.395a1.87 1.87 0 01-1.443.616 1.87 1.87 0 01-1.443-.616 2.017 2.017 0 01-.527-1.395v-8.993c0-.558.175-1.028.527-1.395A1.869 1.869 0 0112.45 10c.557 0 1.038.2 1.443.6.351.367.527.837.527 1.395zM6 17.994v2.998c0 .557-.176 1.027-.527 1.394A1.869 1.869 0 014.03 23a1.87 1.87 0 01-1.443-.614A2.017 2.017 0 012.06 21v-3.006c0-.558.176-1.028.527-1.395A1.869 1.869 0 014.03 16c.557 0 1.038.2 1.443.6.351.366.527.836.527 1.394z"/>
+                </svg>
+              </div>
+              <input
+                type="text"
+                value={settings.googleAnalyticsId}
+                onChange={(e) => setSettings({ ...settings, googleAnalyticsId: e.target.value })}
+                placeholder="e.g. G-XXXXXXXXXX"
+                className="flex-1 rounded-xl border border-gray-100 bg-gray-50/50 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-300 outline-none transition focus:border-[#155dfc] focus:ring-2 focus:ring-[#155dfc]/10"
+              />
+            </div>
+          </div>
+
+          {/* Custom Head Code */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+              Custom Head Code
+            </label>
+            <textarea
+              value={settings.customHeadCode}
+              onChange={(e) => setSettings({ ...settings, customHeadCode: e.target.value })}
+              rows={4}
+              placeholder="Paste any custom &lt;script&gt; or &lt;meta&gt; tags here..."
+              className="w-full resize-none rounded-xl border border-gray-100 bg-gray-50/50 px-4 py-3 font-mono text-xs text-gray-700 placeholder-gray-300 outline-none transition focus:border-[#155dfc] focus:ring-2 focus:ring-[#155dfc]/10"
+            />
+            <p className="text-xs text-gray-400">
+              This code will be injected into the &lt;head&gt; of every page. Use for additional tracking pixels, verification tags, etc.
+            </p>
+          </div>
         </div>
       </div>
 

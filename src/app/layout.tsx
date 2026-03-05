@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ThemeModeScript } from "flowbite-react";
 import BackToTop from "@/components/BackToTop";
+import TrackingScripts from "@/components/TrackingScripts";
 import "./globals.css";
 
 const inter = Inter({
@@ -76,6 +77,7 @@ export default function RootLayout({
         <ThemeModeScript />
       </head>
       <body className={`${inter.variable} font-sans antialiased`}>
+        <TrackingScripts />
         {children}
         <BackToTop />
       </body>
