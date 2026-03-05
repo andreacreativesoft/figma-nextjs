@@ -90,6 +90,15 @@ function IconUsers() {
     </svg>
   );
 }
+function IconAI() {
+  return (
+    <svg className="h-5 w-5" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 2a3 3 0 00-3 3v1H5a2 2 0 00-2 2v1a2 2 0 001 1.73V14a4 4 0 008 0v-3.27A2 2 0 0013 9V8a2 2 0 00-2-2h-2V5a1 1 0 012 0v1h2a1 1 0 110 2h-1v4a2 2 0 11-4 0V8H7a1 1 0 010-2h2V5a3 3 0 013-3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="8" cy="11" r="1" fill="currentColor"/>
+      <circle cx="12" cy="11" r="1" fill="currentColor"/>
+    </svg>
+  );
+}
 function IconSettings() {
   return (
     <svg className="h-5 w-5" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1292,6 +1301,8 @@ interface SiteSettings {
   recaptchaSiteKey: string;
   recaptchaSecretKey: string;
   recaptchaEnabled: boolean;
+  claudeApiKey: string;
+  claudeEnabled: boolean;
 }
 
 interface LinkResult {
@@ -1315,6 +1326,8 @@ function ToolsManager() {
     recaptchaSiteKey: "",
     recaptchaSecretKey: "",
     recaptchaEnabled: false,
+    claudeApiKey: "",
+    claudeEnabled: false,
   });
   const [saving, setSaving] = useState(false);
   const [linkResults, setLinkResults] = useState<LinkResult[]>([]);
@@ -1444,6 +1457,48 @@ function ToolsManager() {
               >
                 Google reCAPTCHA admin console
               </a>
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Claude AI Assistant */}
+      <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <h3 className="text-sm font-semibold text-gray-900">Claude AI Assistant</h3>
+            <p className="mt-0.5 text-xs text-gray-500">Enable AI chat to manage website content with natural language</p>
+          </div>
+          <button
+            onClick={() => setSettings({ ...settings, claudeEnabled: !settings.claudeEnabled })}
+            className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full transition-colors ${
+              settings.claudeEnabled ? "bg-[#155dfc]" : "bg-gray-200"
+            }`}
+          >
+            <span
+              className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition-transform ${
+                settings.claudeEnabled ? "translate-x-6" : "translate-x-1"
+              } mt-1`}
+            />
+          </button>
+        </div>
+
+        {settings.claudeEnabled && (
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                Anthropic API Key
+              </label>
+              <input
+                type="password"
+                value={settings.claudeApiKey}
+                onChange={(e) => setSettings({ ...settings, claudeApiKey: e.target.value })}
+                placeholder="sk-ant-..."
+                className="rounded-xl border border-gray-100 bg-gray-50/50 px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-[#155dfc] focus:ring-2 focus:ring-[#155dfc]/10"
+              />
+            </div>
+            <p className="text-xs text-gray-400">
+              Once enabled, the &quot;AI Assistant&quot; tab appears in the sidebar. Claude can read and modify your site content (FAQ, services, site info, etc.) via chat. Changes take effect immediately — deployed via Vercel on next build.
             </p>
           </div>
         )}
@@ -1668,6 +1723,181 @@ function UsersManager() {
   );
 }
 
+/* ─── AI Assistant Chat ─── */
+interface AIChatMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
+function AIAssistant() {
+  const [messages, setMessages] = useState<AIChatMessage[]>([]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  async function sendMessage(e: React.FormEvent) {
+    e.preventDefault();
+    if (!input.trim() || loading) return;
+
+    const userMsg: AIChatMessage = { role: "user", content: input.trim() };
+    const newMessages = [...messages, userMsg];
+    setMessages(newMessages);
+    setInput("");
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await fetch("/api/ai-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: newMessages }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error || "Failed to get response");
+        setLoading(false);
+        return;
+      }
+
+      const data = await res.json();
+      setMessages([...newMessages, { role: "assistant", content: data.reply }]);
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div>
+        <h2 className="text-xl font-bold text-gray-900">AI Assistant</h2>
+        <p className="mt-1 text-sm text-gray-500">
+          Chat with Claude to manage your website content. Ask it to update FAQ, services, site info, and more.
+        </p>
+      </div>
+
+      {/* Chat area */}
+      <div className="flex flex-col rounded-2xl border border-gray-100 bg-white shadow-sm" style={{ height: "calc(100vh - 220px)" }}>
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto p-6">
+          {messages.length === 0 && (
+            <div className="flex h-full flex-col items-center justify-center gap-4 text-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#155dfc] to-purple-600">
+                <svg className="h-8 w-8 text-white" viewBox="0 0 20 20" fill="none">
+                  <path d="M10 2a3 3 0 00-3 3v1H5a2 2 0 00-2 2v1a2 2 0 001 1.73V14a4 4 0 008 0v-3.27A2 2 0 0013 9V8a2 2 0 00-2-2h-2V5a1 1 0 012 0v1h2a1 1 0 110 2h-1v4a2 2 0 11-4 0V8H7a1 1 0 010-2h2V5a3 3 0 013-3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+                  <circle cx="8" cy="11" r="1" fill="currentColor"/>
+                  <circle cx="12" cy="11" r="1" fill="currentColor"/>
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-base font-semibold text-gray-900">Claude AI Assistant</h3>
+                <p className="mt-1 max-w-sm text-sm text-gray-400">
+                  I can help you manage your website. Try asking me to:
+                </p>
+              </div>
+              <div className="mt-2 flex flex-wrap justify-center gap-2">
+                {[
+                  "Show me all FAQ entries",
+                  "Add a new service for emergency repairs",
+                  "Update the phone number to 0470 123 456",
+                  "What messages have we received?",
+                ].map((suggestion) => (
+                  <button
+                    key={suggestion}
+                    onClick={() => setInput(suggestion)}
+                    className="rounded-xl border border-gray-100 bg-gray-50 px-3 py-2 text-xs text-gray-600 transition hover:border-[#155dfc]/30 hover:bg-[#155dfc]/5 hover:text-[#155dfc]"
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="flex flex-col gap-4">
+            {messages.map((msg, i) => (
+              <div
+                key={i}
+                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+              >
+                <div
+                  className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+                    msg.role === "user"
+                      ? "bg-[#155dfc] text-white"
+                      : "bg-gray-50 text-gray-800 border border-gray-100"
+                  }`}
+                >
+                  {msg.role === "assistant" ? (
+                    <div className="whitespace-pre-wrap">{msg.content}</div>
+                  ) : (
+                    msg.content
+                  )}
+                </div>
+              </div>
+            ))}
+
+            {loading && (
+              <div className="flex justify-start">
+                <div className="flex items-center gap-2 rounded-2xl border border-gray-100 bg-gray-50 px-4 py-3 text-sm text-gray-400">
+                  <span className="flex gap-1">
+                    <span className="h-2 w-2 animate-bounce rounded-full bg-gray-300" style={{ animationDelay: "0ms" }} />
+                    <span className="h-2 w-2 animate-bounce rounded-full bg-gray-300" style={{ animationDelay: "150ms" }} />
+                    <span className="h-2 w-2 animate-bounce rounded-full bg-gray-300" style={{ animationDelay: "300ms" }} />
+                  </span>
+                  Claude is thinking...
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Error */}
+        {error && (
+          <div className="mx-6 mb-2 rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-600">
+            {error}
+          </div>
+        )}
+
+        {/* Input */}
+        <div className="border-t border-gray-100 p-4">
+          <form onSubmit={sendMessage} className="flex gap-3">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Ask Claude to make changes to your website..."
+              disabled={loading}
+              className="flex-1 rounded-xl border border-gray-100 bg-gray-50/50 px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none transition focus:border-[#155dfc] focus:ring-2 focus:ring-[#155dfc]/10 disabled:opacity-50"
+            />
+            <button
+              type="submit"
+              disabled={loading || !input.trim()}
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#155dfc] px-5 py-3 text-sm font-medium text-white shadow-sm shadow-[#155dfc]/20 transition hover:bg-[#1447e6] disabled:opacity-50"
+            >
+              <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none">
+                <path d="M3 10l7-7 7 7M10 3v14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" transform="rotate(-45 10 10)"/>
+              </svg>
+              Send
+            </button>
+          </form>
+          <p className="mt-2 text-center text-[10px] text-gray-300">
+            Changes made by Claude are applied immediately to your site data
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ─── Admin Dashboard ─── */
 const allTabs = [
   { key: "messages" as const, label: "Messages", icon: IconMessages, minRole: "admin" as const },
@@ -1677,6 +1907,7 @@ const allTabs = [
   { key: "site-info" as const, label: "Site Info", icon: IconSettings, minRole: "admin" as const },
   { key: "tools" as const, label: "Tools", icon: IconTools, minRole: "superadmin" as const },
   { key: "users" as const, label: "Users", icon: IconUsers, minRole: "superadmin" as const },
+  { key: "ai" as const, label: "AI Assistant", icon: IconAI, minRole: "superadmin" as const },
 ];
 
 type Tab = (typeof allTabs)[number]["key"];
@@ -1803,6 +2034,7 @@ export default function AdminPage() {
           {tab === "site-info" && <SiteInfoManager />}
           {tab === "tools" && role === "superadmin" && <ToolsManager />}
           {tab === "users" && role === "superadmin" && <UsersManager />}
+          {tab === "ai" && role === "superadmin" && <AIAssistant />}
         </div>
       </main>
     </div>

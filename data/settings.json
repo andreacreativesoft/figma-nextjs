@@ -2,5 +2,7 @@
   "backToTop": true,
   "recaptchaSiteKey": "",
   "recaptchaSecretKey": "",
-  "recaptchaEnabled": false
+  "recaptchaEnabled": false,
+  "claudeApiKey": "",
+  "claudeEnabled": false
 }

@@ -7,6 +7,8 @@ export interface SiteSettings {
   recaptchaSiteKey: string;
   recaptchaSecretKey: string;
   recaptchaEnabled: boolean;
+  claudeApiKey: string;
+  claudeEnabled: boolean;
 }
 
 export async function GET() {
