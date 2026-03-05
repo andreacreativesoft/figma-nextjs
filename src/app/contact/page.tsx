@@ -120,12 +120,23 @@ export default function ContactPage() {
       {/* Hero banner */}
       <section className="relative">
         <div className="absolute inset-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/images/contact-bg.jpg"
-            alt=""
-            className="h-full w-full object-cover"
-          />
+          <picture>
+            <source
+              media="(min-width: 768px)"
+              srcSet="/images/contact-bg-desktop.webp"
+              type="image/webp"
+            />
+            <source
+              srcSet="/images/contact-bg-mobile.webp 1x, /images/contact-bg-mobile-2x.webp 2x"
+              type="image/webp"
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/contact-bg.jpg"
+              alt=""
+              className="h-full w-full object-cover"
+            />
+          </picture>
           <div className="absolute inset-0 bg-[rgba(10,53,87,0.85)]" />
         </div>
         <div className="relative z-10 mx-auto max-w-[1440px] px-4 py-20 text-center md:px-8 md:py-28">

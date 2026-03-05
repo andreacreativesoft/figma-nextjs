@@ -52,25 +52,25 @@ export default function FooterSection() {
                 </h4>
                 <nav className="flex flex-col gap-4">
                   <a
-                    href="#"
+                    href="/"
                     className="text-base leading-[1.5] text-[#52525C] hover:text-brand-950"
                   >
                     Home
                   </a>
                   <a
-                    href="#"
+                    href="/about"
                     className="text-base leading-[1.5] text-[#52525C] hover:text-brand-950"
                   >
                     À propos de nous
                   </a>
                   <a
-                    href="#"
+                    href="/services"
                     className="text-base leading-[1.5] text-[#52525C] hover:text-brand-950"
                   >
                     Nos services
                   </a>
                   <a
-                    href="#"
+                    href="/contact"
                     className="text-base leading-[1.5] text-[#52525C] hover:text-brand-950"
                   >
                     Contact

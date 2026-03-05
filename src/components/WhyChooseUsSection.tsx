@@ -26,12 +26,18 @@ export default function WhyChooseUsSection() {
     <section className="relative bg-brand-950">
       {/* Right side background image */}
       <div className="absolute inset-y-0 right-0 hidden w-[47%] lg:block">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/images/why-choose-us.jpg"
-          alt="Pourquoi choisir AZ Pro Services"
-          className="h-full w-full object-cover"
-        />
+        <picture>
+          <source
+            srcSet="/images/why-choose-us-desktop.webp 1x, /images/why-choose-us-desktop-2x.webp 2x"
+            type="image/webp"
+          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/why-choose-us.jpg"
+            alt="Pourquoi choisir AZ Pro Services"
+            className="h-full w-full object-cover"
+          />
+        </picture>
       </div>
 
       {/* Content */}
