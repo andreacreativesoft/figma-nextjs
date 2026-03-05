@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "username": "admin",
+    "password": "admin822",
+    "role": "superadmin",
+    "label": "Developer"
+  },
+  {
+    "id": 2,
+    "username": "client",
+    "password": "azpro2024",
+    "role": "admin",
+    "label": "Client Admin"
+  }
+]
