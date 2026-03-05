@@ -51,14 +51,14 @@ export default function FAQSection() {
 
   return (
     <section className="bg-white">
-      <div className="mx-auto max-w-[1440px] px-[292px] py-24">
+      <div className="mx-auto max-w-[1440px] px-4 py-24 md:px-8 lg:px-[292px]">
         <div className="flex flex-col items-center gap-16">
           {/* Header */}
           <div className="flex flex-col items-center gap-5 text-center">
             <span className="text-base font-semibold uppercase leading-[1.5] tracking-[0.32px] text-[#155dfc]">
               FAQ
             </span>
-            <h2 className="text-5xl font-semibold leading-[1.2] text-brand-950">
+            <h2 className="text-3xl font-semibold leading-[1.2] text-brand-950 md:text-5xl">
               Foire aux questions
             </h2>
           </div>

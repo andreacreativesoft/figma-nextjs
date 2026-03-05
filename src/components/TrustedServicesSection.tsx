@@ -15,7 +15,7 @@ export default function TrustedServicesSection() {
   return (
     <section className="relative bg-brand-950">
       {/* Right side background image */}
-      <div className="absolute inset-y-0 right-0 w-[47%]">
+      <div className="absolute inset-y-0 right-0 hidden w-[47%] lg:block">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/images/trusted-services.jpg"
@@ -26,10 +26,10 @@ export default function TrustedServicesSection() {
 
       {/* Content */}
       <div className="relative z-10 mx-auto max-w-[1440px]">
-        <div className="flex w-[762px] shrink-0 flex-col justify-center gap-[34px] py-24 pl-[72px] pr-[164px]">
+        <div className="flex w-full shrink-0 flex-col justify-center gap-[34px] px-4 py-24 md:px-8 lg:w-[762px] lg:pl-[72px] lg:pr-[164px]">
           {/* Title */}
           <div className="flex flex-col gap-6">
-            <h2 className="text-5xl font-semibold leading-[1.2] text-white">
+            <h2 className="text-3xl font-semibold leading-[1.2] text-white md:text-5xl">
               Service de confiance personnalisé
             </h2>
             <p className="text-base leading-[1.5] text-[#E4E4E7]">

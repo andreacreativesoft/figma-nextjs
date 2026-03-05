@@ -119,7 +119,7 @@ export default function NavbarSection() {
   return (
     <header>
       {/* Top bar */}
-      <div className="border-b border-gray-200 bg-gray-50 py-2.5">
+      <div className="hidden border-b border-gray-200 bg-gray-50 py-2.5 md:block">
         <div className="mx-auto flex max-w-[1440px] items-center justify-between px-4">
           <div className="flex items-center gap-4">
             <a
@@ -179,7 +179,7 @@ export default function NavbarSection() {
               className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#155dfc] px-4 py-2.5 text-sm font-medium leading-5 text-white shadow-[0px_1px_0.5px_0px_rgba(29,41,61,0.02)] hover:bg-[#1447e6]"
             >
               <PhoneIconWhite className="h-4 w-4" />
-              0465877248
+              <span className="hidden md:inline">0465877248</span>
             </a>
           </div>
         </div>

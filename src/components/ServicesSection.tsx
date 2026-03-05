@@ -24,14 +24,14 @@ const services = [
 export default function ServicesSection() {
   return (
     <section className="bg-[#F4F4F5]">
-      <div className="mx-auto max-w-[1440px] px-[182px] py-24">
+      <div className="mx-auto max-w-[1440px] px-4 py-24 md:px-8 lg:px-[182px]">
       <div className="flex flex-col items-center gap-16">
         {/* Header */}
         <div className="flex flex-col items-center gap-5 text-center">
           <span className="text-base font-semibold uppercase tracking-[0.32px] text-[#155dfc]">
             NOS SERVICES
           </span>
-          <h2 className="text-5xl font-semibold leading-[1.2] text-brand-950">
+          <h2 className="text-3xl font-semibold leading-[1.2] text-brand-950 md:text-5xl">
             Notre expertise - nos services
           </h2>
           <p className="max-w-3xl text-base leading-6 text-[#52525C]">
@@ -44,7 +44,7 @@ export default function ServicesSection() {
         </div>
 
         {/* Cards */}
-        <div className="flex gap-6">
+        <div className="flex flex-col gap-6 md:flex-row">
           {services.map((service) => (
             <div
               key={service.title}

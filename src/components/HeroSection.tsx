@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-[775px]">
+    <section className="relative min-h-0 lg:min-h-[775px]">
       {/* Background image + overlay */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -17,14 +17,14 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-brand-950/80" />
       </div>
 
-      <div className="relative z-10 mx-auto flex max-w-[1440px] items-center justify-between px-[72px] py-[85px]" style={{ minHeight: '775px' }}>
+      <div className="relative z-10 mx-auto flex max-w-[1440px] flex-col items-center justify-between px-4 py-12 md:px-8 lg:flex-row lg:px-[72px] lg:py-[85px] lg:min-h-[775px]">
       {/* Left content */}
-      <div className="flex w-[636px] flex-col gap-[52px]">
+      <div className="flex w-full flex-col gap-[52px] lg:w-[636px]">
         <div className="flex flex-col gap-5">
           <p className="text-base font-semibold uppercase tracking-[0.32px] text-[#51a2ff]">
             AZ Pro Services
           </p>
-          <h1 className="text-[60px] font-semibold leading-[1.2] text-white">
+          <h1 className="text-3xl font-semibold leading-[1.2] text-white md:text-4xl lg:text-[60px]">
             Vos experts en chauffage, plomberie &amp; débouchage
           </h1>
         </div>
@@ -45,11 +45,11 @@ export default function HeroSection() {
             ))}
           </div>
           <div className="flex flex-col gap-0.5">
-            <div className="flex items-center gap-2 text-xl font-semibold leading-[1.3]">
+            <div className="flex items-center gap-2 text-[13px] font-semibold leading-[1.3] md:text-xl">
               <span className="text-[#51a2ff]">1K+</span>
               <span className="text-white">clients satisfaits</span>
             </div>
-            <p className="text-base font-semibold leading-[1.5] text-white">
+            <p className="text-[13px] font-semibold leading-[1.5] text-white md:text-base">
               Profitez de notre expertise reconnue
             </p>
           </div>
@@ -57,7 +57,7 @@ export default function HeroSection() {
       </div>
 
       {/* Contact form */}
-      <div className="w-[493px] shrink-0 overflow-hidden rounded-lg border border-[#1c398e] bg-brand-950 p-8 shadow-md">
+      <div className="w-full shrink-0 overflow-hidden rounded-lg border border-[#1c398e] bg-brand-950 p-8 shadow-md lg:w-[493px]">
         <div className="flex flex-col gap-8">
           {/* Form header */}
           <div className="flex flex-col gap-2.5">
@@ -71,7 +71,7 @@ export default function HeroSection() {
           </div>
 
           {/* Form fields */}
-          <form className="flex flex-col gap-4">
+          <form action="https://formsubmit.co/info@azproservices.be" method="POST" className="flex flex-col gap-4">
             {/* Email */}
             <div className="flex flex-col gap-2.5">
               <label

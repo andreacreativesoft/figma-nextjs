@@ -25,7 +25,7 @@ export default function WhyChooseUsSection() {
   return (
     <section className="relative bg-brand-950">
       {/* Right side background image */}
-      <div className="absolute inset-y-0 right-0 w-[47%]">
+      <div className="absolute inset-y-0 right-0 hidden w-[47%] lg:block">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/images/why-choose-us.jpg"
@@ -36,13 +36,13 @@ export default function WhyChooseUsSection() {
 
       {/* Content */}
       <div className="relative z-10 mx-auto max-w-[1440px]">
-        <div className="flex w-[762px] shrink-0 flex-col justify-center gap-[34px] py-24 pl-[72px] pr-[164px]">
+        <div className="flex w-full shrink-0 flex-col justify-center gap-[34px] px-4 py-24 md:px-8 lg:w-[762px] lg:pl-[72px] lg:pr-[164px]">
           {/* Title */}
           <div className="flex flex-col gap-5">
             <span className="text-base font-semibold uppercase leading-[1.5] tracking-[0.32px] text-[#51a2ff]">
               CE QUI NOUS RENDS DIFFÉRENT
             </span>
-            <h2 className="text-5xl font-semibold leading-[1.2] text-white">
+            <h2 className="text-3xl font-semibold leading-[1.2] text-white md:text-5xl">
               Pourquoi choisir AZ Pro Services
             </h2>
           </div>

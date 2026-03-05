@@ -13,17 +13,17 @@ export default function ContactSection() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 mx-auto max-w-[1440px] px-[182px] py-24">
+      <div className="relative z-10 mx-auto max-w-[1440px] px-4 py-24 md:px-8 lg:px-[182px]">
         <div className="flex flex-col items-start gap-16">
           {/* Title */}
-          <h2 className="w-full text-center text-5xl font-semibold leading-[1.2] text-[#F4F4F6]">
+          <h2 className="w-full text-center text-3xl font-semibold leading-[1.2] text-[#F4F4F6] md:text-5xl">
             Contactez-nous pour
             <br />
             commander nos services
           </h2>
 
           {/* Card: Form + Map */}
-          <div className="flex w-full gap-[104px] rounded-lg border border-white/20 bg-brand-950 p-8">
+          <div className="flex w-full flex-col gap-8 rounded-lg border border-white/20 bg-brand-950 p-8 lg:flex-row lg:gap-[104px]">
             {/* Form */}
             <div className="flex flex-1 flex-col gap-8">
               {/* Form Header */}
@@ -38,13 +38,14 @@ export default function ContactSection() {
               </div>
 
               {/* Form Fields */}
-              <div className="flex flex-col gap-4">
+              <form action="https://formsubmit.co/info@azproservices.be" method="POST" className="flex flex-col gap-4">
                 {/* Email */}
                 <div className="flex flex-col gap-2.5">
                   <label className="text-sm font-medium leading-5 text-white">
                     Your email
                   </label>
                   <input
+                    name="email"
                     type="email"
                     placeholder="name@flowbite.com"
                     className="w-full rounded-xl border border-white/15 bg-white/10 px-3 py-2.5 text-sm leading-5 text-white placeholder-[#9F9FA9] shadow-[0px_1px_0.5px_0px_rgba(29,41,61,0.02)] outline-none focus:border-white/30"
@@ -57,6 +58,7 @@ export default function ContactSection() {
                     Subject
                   </label>
                   <input
+                    name="subject"
                     type="text"
                     placeholder="Enter your subject"
                     className="w-full rounded-xl border border-white/15 bg-white/10 px-3 py-2.5 text-sm leading-5 text-white placeholder-[#9F9FA9] shadow-[0px_1px_0.5px_0px_rgba(29,41,61,0.02)] outline-none focus:border-white/30"
@@ -69,6 +71,7 @@ export default function ContactSection() {
                     Your message
                   </label>
                   <textarea
+                    name="message"
                     rows={4}
                     className="w-full rounded-xl border border-white/15 bg-white/10 p-3.5 text-sm leading-5 text-white placeholder-[#9F9FA9] shadow-[0px_1px_0.5px_0px_rgba(29,41,61,0.02)] outline-none focus:border-white/30"
                   />
@@ -79,16 +82,16 @@ export default function ContactSection() {
 
                 {/* Submit */}
                 <button
-                  type="button"
+                  type="submit"
                   className="w-full rounded-xl bg-[#155dfc] px-4 py-2.5 text-sm font-medium leading-5 text-white shadow-[0px_1px_0.5px_0px_rgba(29,41,61,0.02)] hover:bg-[#1447e6]"
                 >
                   Send message
                 </button>
-              </div>
+              </form>
             </div>
 
             {/* Map */}
-            <div className="flex-1 self-stretch overflow-hidden rounded">
+            <div className="min-h-[300px] flex-1 self-stretch overflow-hidden rounded lg:min-h-0">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2520.0!2d4.3!3d50.84!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTDCsDUwJzI0LjAiTiA0wrAxOCcwMC4wIkU!5e0!3m2!1sfr!2sbe!4v1"
                 width="100%"

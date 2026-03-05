@@ -1,26 +1,26 @@
 export default function FooterSection() {
   return (
     <footer className="bg-white">
-      <div className="mx-auto max-w-[1440px] px-[72px] py-14">
+      <div className="mx-auto max-w-[1440px] px-4 py-14 md:px-8 lg:px-[72px]">
         <div className="flex flex-col gap-14">
           {/* Main content */}
-          <div className="flex items-start justify-between">
+          <div className="flex flex-col items-start gap-8 lg:flex-row lg:gap-0 lg:justify-between">
             {/* Left: Logo + Description */}
-            <div className="flex flex-1 items-center gap-16">
+            <div className="flex flex-1 flex-col items-center gap-4 md:flex-row md:gap-16">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/images/footer-logo.svg"
                 alt="AZ Pro Services"
                 className="h-[100px] w-auto shrink-0"
               />
-              <p className="w-[382px] text-base leading-[1.5] text-[#52525C]">
+              <p className="w-full text-base leading-[1.5] text-[#52525C] lg:w-[382px]">
                 Services professionnels de chauffage et plomberie (Bruxelles,
                 Brabant Wallon, Brabant Flamand) et débouchage (Namur)
               </p>
             </div>
 
             {/* Right: Pages + Contacts */}
-            <div className="flex flex-1 justify-end gap-6">
+            <div className="flex flex-1 flex-col gap-8 md:flex-row md:gap-6 lg:justify-end">
               {/* Pages */}
               <div className="flex w-[196px] flex-col gap-8">
                 <h4 className="text-lg font-semibold leading-[1.5] text-[#155dfc]">
@@ -67,9 +67,14 @@ export default function FooterSection() {
                       alt=""
                       className="h-5 w-5 shrink-0"
                     />
-                    <span className="text-base leading-[1.5] text-[#52525C]">
+                    <a
+                      href="https://www.google.com/maps/search/?api=1&query=Chauss%C3%A9e+de+Ninove+307%2F1+1070+Anderlecht"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-base leading-[1.5] text-[#52525C] hover:text-brand-950"
+                    >
                       Chaussée de Ninove 307/1, 1070 Anderlecht
-                    </span>
+                    </a>
                   </div>
                   <div className="flex items-center gap-3">
                     {/* eslint-disable-next-line @next/next/no-img-element */}

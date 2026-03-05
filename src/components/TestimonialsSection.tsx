@@ -49,7 +49,7 @@ function StarIcon() {
 export default function TestimonialsSection() {
   return (
     <section className="bg-[#F4F4F5]">
-      <div className="mx-auto max-w-[1440px] px-[182px] py-24">
+      <div className="mx-auto max-w-[1440px] px-4 py-24 md:px-8 lg:px-[182px]">
       <div className="flex flex-col items-center gap-16">
         {/* Header */}
         <div className="flex flex-col items-center gap-4">
@@ -61,7 +61,7 @@ export default function TestimonialsSection() {
               alt="Google"
               className="h-6 w-6"
             />
-            <span className="text-base font-semibold uppercase tracking-[0.32px] text-[#155dfc]">
+            <span className="text-sm font-semibold uppercase tracking-[0.32px] text-[#155dfc]">
               Approuvé par +1 000 clients
             </span>
             <span className="text-sm font-bold uppercase tracking-[0.14px] text-[#155dfc]">
@@ -75,20 +75,20 @@ export default function TestimonialsSection() {
               <StarIcon />
             </div>
           </div>
-          <h2 className="text-5xl font-semibold leading-[1.2] text-[#27282C]">
+          <h2 className="text-3xl font-semibold leading-[1.2] text-[#27282C] md:text-5xl">
             Témoignages
           </h2>
         </div>
 
         {/* Testimonial Card Grid */}
         <div className="w-full overflow-hidden rounded-xl border border-[#E4E4E7] bg-white p-7 shadow-md">
-          <div className="grid grid-cols-2">
+          <div className="grid grid-cols-1 md:grid-cols-2">
             {testimonials.map((t, i) => (
               <div
                 key={t.name}
                 className={`flex flex-col items-center gap-4 px-6 py-6 text-center ${
-                  i % 2 === 0 ? "border-r border-[#E4E4E7]" : ""
-                } ${i >= 2 ? "border-t border-[#E4E4E7]" : ""}`}
+                  i % 2 === 0 ? "md:border-r md:border-[#E4E4E7]" : ""
+                } ${i >= 1 ? "border-t border-[#E4E4E7]" : ""} ${i < 2 ? "md:border-t-0" : ""}`}
               >
                 {/* Quote */}
                 <div className="flex flex-col items-center gap-2">

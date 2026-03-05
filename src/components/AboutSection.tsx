@@ -20,12 +20,12 @@ const benefits = [
 export default function AboutSection() {
   return (
     <section className="bg-white">
-      <div className="mx-auto max-w-[1440px] px-[72px] py-24">
+      <div className="mx-auto max-w-[1440px] px-4 py-24 md:px-8 lg:px-[72px]">
       <div className="flex flex-col gap-[72px]">
         {/* Top: Image + Content */}
-        <div className="flex items-center gap-[132px]">
+        <div className="flex flex-col items-center gap-8 lg:flex-row lg:gap-[132px]">
           {/* Image */}
-          <div className="h-[520px] w-[526px] shrink-0 overflow-hidden rounded-lg">
+          <div className="h-[300px] w-full shrink-0 overflow-hidden rounded-lg lg:h-[520px] lg:w-[526px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/images/about-image.jpg"
@@ -35,13 +35,13 @@ export default function AboutSection() {
           </div>
 
           {/* Content */}
-          <div className="flex w-[636px] flex-col gap-[51px]">
+          <div className="flex w-full flex-col gap-[51px] lg:w-[636px]">
             <div className="flex flex-col gap-10">
               <div className="flex flex-col gap-5">
                 <span className="text-base font-semibold uppercase leading-[1.5] tracking-[0.32px] text-[#155dfc]">
                   QUI NOUS SOMMES
                 </span>
-                <h2 className="text-5xl font-semibold leading-[1.2] text-brand-950">
+                <h2 className="text-3xl font-semibold leading-[1.2] text-brand-950 md:text-5xl">
                   Solutions complètes pour votre maison
                 </h2>
               </div>
@@ -83,11 +83,11 @@ export default function AboutSection() {
           <hr className="border-t border-[#E4E4E7]" />
 
           {/* Benefits list */}
-          <div className="flex items-center gap-6">
+          <div className="grid grid-cols-2 gap-4 lg:flex lg:gap-6">
             {benefits.map((benefit) => (
               <div
                 key={benefit.text}
-                className="flex w-[306px] items-center gap-4"
+                className="flex w-auto items-center gap-4"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -95,7 +95,7 @@ export default function AboutSection() {
                   alt=""
                   className="h-8 w-8 shrink-0"
                 />
-                <span className="whitespace-pre-wrap text-base font-semibold leading-[1.5] text-brand-950">
+                <span className="whitespace-pre-wrap text-sm font-semibold leading-[1.5] text-brand-950">
                   {benefit.text}
                 </span>
               </div>

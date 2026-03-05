@@ -22,7 +22,7 @@ const steps = [
 export default function HowItWorksSection() {
   return (
     <section className="bg-white">
-      <div className="mx-auto max-w-[1440px] px-[182px] py-24">
+      <div className="mx-auto max-w-[1440px] px-4 py-24 md:px-8 lg:px-[182px]">
       <div className="flex flex-col items-center gap-[72px]">
         {/* Header */}
         <div className="flex flex-col items-center gap-8 text-center">
@@ -30,7 +30,7 @@ export default function HowItWorksSection() {
             <span className="text-base font-semibold uppercase leading-[1.5] tracking-[0.32px] text-[#155dfc]">
               NOTRE APPROCHE
             </span>
-            <h2 className="text-5xl font-semibold leading-[1.2] text-brand-950">
+            <h2 className="text-3xl font-semibold leading-[1.2] text-brand-950 md:text-5xl">
               Comment ça marche
             </h2>
           </div>
@@ -42,7 +42,7 @@ export default function HowItWorksSection() {
         </div>
 
         {/* Steps */}
-        <div className="flex w-full items-start justify-center gap-6">
+        <div className="flex w-full flex-col items-start justify-center gap-8 md:flex-row md:gap-6">
           {steps.map((step) => (
             <div
               key={step.title}
