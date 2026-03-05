@@ -87,7 +87,7 @@ export default function AboutSection() {
             {benefits.map((benefit) => (
               <div
                 key={benefit.text}
-                className="flex w-auto items-center gap-4"
+                className="flex items-center gap-4 lg:flex-1"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
