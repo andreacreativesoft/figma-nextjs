@@ -10,6 +10,12 @@ interface TrackingSettings {
   customHeadCode: string;
 }
 
+const TRACKING_ID_RE = /^[A-Za-z0-9-]+$/;
+
+function isValidTrackingId(id: string): boolean {
+  return TRACKING_ID_RE.test(id);
+}
+
 export default function TrackingScripts() {
   const [settings, setSettings] = useState<TrackingSettings | null>(null);
 
@@ -22,10 +28,14 @@ export default function TrackingScripts() {
 
   if (!settings) return null;
 
+  const safeGtmId = settings.googleTagId && isValidTrackingId(settings.googleTagId) ? settings.googleTagId : "";
+  const safeGaId = settings.googleAnalyticsId && isValidTrackingId(settings.googleAnalyticsId) ? settings.googleAnalyticsId : "";
+  const safeFbId = settings.facebookPixelId && isValidTrackingId(settings.facebookPixelId) ? settings.facebookPixelId : "";
+
   return (
     <>
       {/* Google Tag Manager */}
-      {settings.googleTagId && (
+      {safeGtmId && (
         <>
           <Script
             id="gtm-script"
@@ -35,17 +45,17 @@ export default function TrackingScripts() {
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','${settings.googleTagId}');`,
+})(window,document,'script','dataLayer','${safeGtmId}');`,
             }}
           />
         </>
       )}
 
       {/* Google Analytics */}
-      {settings.googleAnalyticsId && (
+      {safeGaId && (
         <>
           <Script
-            src={`https://www.googletagmanager.com/gtag/js?id=${settings.googleAnalyticsId}`}
+            src={`https://www.googletagmanager.com/gtag/js?id=${safeGaId}`}
             strategy="afterInteractive"
           />
           <Script
@@ -55,14 +65,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               __html: `window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-gtag('config', '${settings.googleAnalyticsId}');`,
+gtag('config', '${safeGaId}');`,
             }}
           />
         </>
       )}
 
       {/* Facebook Pixel */}
-      {settings.facebookPixelId && (
+      {safeFbId && (
         <Script
           id="fb-pixel"
           strategy="afterInteractive"
@@ -75,20 +85,15 @@ n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];
 s.parentNode.insertBefore(t,s)}(window, document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '${settings.facebookPixelId}');
+fbq('init', '${safeFbId}');
 fbq('track', 'PageView');`,
           }}
         />
       )}
 
-      {/* Custom Head Code */}
-      {settings.customHeadCode && (
-        <Script
-          id="custom-head"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{ __html: settings.customHeadCode }}
-        />
-      )}
+      {/* Custom Head Code - REMOVED: dangerouslySetInnerHTML was a malware injection vector.
+         The customHeadCode field allowed arbitrary JS execution, which was exploited
+         to inject a redirect to Ferronnerie-fano.be. Use specific tracking ID fields instead. */}
     </>
   );
 }

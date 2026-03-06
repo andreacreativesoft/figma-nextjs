@@ -1929,22 +1929,9 @@ function ToolsManager({ onBlogToggle }: { onBlogToggle: (v: boolean) => void }) 
             </div>
           </div>
 
-          {/* Custom Head Code */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">
-              Custom Head Code
-            </label>
-            <textarea
-              value={settings.customHeadCode}
-              onChange={(e) => setSettings({ ...settings, customHeadCode: e.target.value })}
-              rows={4}
-              placeholder="Paste any custom &lt;script&gt; or &lt;meta&gt; tags here..."
-              className="w-full resize-none rounded-xl border border-gray-100 bg-gray-50/50 px-4 py-3 font-mono text-xs text-gray-700 placeholder-gray-300 outline-none transition focus:border-[#155dfc] focus:ring-2 focus:ring-[#155dfc]/10"
-            />
-            <p className="text-xs text-gray-400">
-              This code will be injected into the &lt;head&gt; of every page. Use for additional tracking pixels, verification tags, etc.
-            </p>
-          </div>
+          {/* Custom Head Code - REMOVED for security. This field allowed arbitrary
+             script injection and was exploited to inject malware redirects.
+             Use the specific tracking ID fields above instead. */}
         </div>
       </div>
 
