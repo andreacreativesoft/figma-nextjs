@@ -9,6 +9,11 @@ export interface SiteSettings {
   recaptchaEnabled: boolean;
   claudeApiKey: string;
   claudeEnabled: boolean;
+  facebookPixelId: string;
+  googleTagId: string;
+  googleAnalyticsId: string;
+  customHeadCode: string;
+  blogEnabled: boolean;
 }
 
 export async function GET() {

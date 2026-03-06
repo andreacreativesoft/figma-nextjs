@@ -99,6 +99,14 @@ function IconAI() {
     </svg>
   );
 }
+function IconBlog() {
+  return (
+    <svg className="h-5 w-5" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 4h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M6 8h8M6 11h8M6 14h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  );
+}
 function IconSettings() {
   return (
     <svg className="h-5 w-5" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1295,6 +1303,445 @@ function MessagesManager() {
   );
 }
 
+/* ─── Blog Manager ─── */
+interface BlogCategory {
+  id: number;
+  name: string;
+  slug: string;
+}
+
+interface BlogPost {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  image: string;
+  categoryId: number | null;
+  status: "draft" | "published";
+  createdAt: string;
+  updatedAt: string;
+}
+
+function slugify(text: string) {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+function BlogManager() {
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [categories, setCategories] = useState<BlogCategory[]>([]);
+  const [view, setView] = useState<"list" | "editor" | "categories">("list");
+  const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [catSaving, setCatSaving] = useState(false);
+  const { toast, showToast } = useSaveToast();
+
+  useEffect(() => {
+    fetch("/api/blog/posts").then((r) => r.json()).then(setPosts);
+    fetch("/api/blog/categories").then((r) => r.json()).then(setCategories);
+  }, []);
+
+  function openNewPost() {
+    setEditingPost({
+      id: 0,
+      title: "",
+      slug: "",
+      excerpt: "",
+      content: "",
+      image: "",
+      categoryId: null,
+      status: "draft",
+      createdAt: "",
+      updatedAt: "",
+    });
+    setView("editor");
+  }
+
+  function openEditPost(post: BlogPost) {
+    setEditingPost({ ...post });
+    setView("editor");
+  }
+
+  async function savePost() {
+    if (!editingPost) return;
+    setSaving(true);
+    const isNew = editingPost.id === 0;
+    const method = isNew ? "POST" : "PUT";
+    const res = await fetch("/api/blog/posts", {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...editingPost,
+        slug: editingPost.slug || slugify(editingPost.title),
+      }),
+    });
+    if (res.ok) {
+      const saved = await res.json();
+      if (isNew) {
+        setPosts([saved, ...posts]);
+      } else {
+        setPosts(posts.map((p) => (p.id === saved.id ? saved : p)));
+      }
+      setView("list");
+      setEditingPost(null);
+      showToast(isNew ? "Post created" : "Post updated");
+    }
+    setSaving(false);
+  }
+
+  async function deletePost(id: number) {
+    if (!confirm("Delete this post?")) return;
+    await fetch("/api/blog/posts", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+    setPosts(posts.filter((p) => p.id !== id));
+    showToast("Post deleted");
+  }
+
+  async function saveCategories() {
+    setCatSaving(true);
+    await fetch("/api/blog/categories", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(categories),
+    });
+    setCatSaving(false);
+    showToast("Categories saved");
+  }
+
+  function addCategory() {
+    const maxId = categories.reduce((max, c) => Math.max(max, c.id), 0);
+    setCategories([...categories, { id: maxId + 1, name: "", slug: "" }]);
+  }
+
+  function removeCategory(id: number) {
+    setCategories(categories.filter((c) => c.id !== id));
+  }
+
+  function getCategoryName(id: number | null) {
+    if (!id) return "—";
+    return categories.find((c) => c.id === id)?.name || "—";
+  }
+
+  /* ── Categories View ── */
+  if (view === "categories") {
+    return (
+      <div className="flex flex-col gap-6">
+        <div className="flex items-start justify-between">
+          <div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setView("list")}
+                className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 transition"
+              >
+                <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none"><path d="M12 4l-6 6 6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                Back
+              </button>
+              <h2 className="text-xl font-bold text-gray-900">Categories</h2>
+            </div>
+            <p className="mt-1 text-sm text-gray-500">Organize your blog posts into categories</p>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={addCategory}
+              className="inline-flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50"
+            >
+              <IconPlus />
+              Add category
+            </button>
+            <button
+              onClick={saveCategories}
+              disabled={catSaving}
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#155dfc] px-5 py-2.5 text-sm font-medium text-white shadow-sm shadow-[#155dfc]/20 transition hover:bg-[#1447e6] disabled:opacity-50"
+            >
+              {catSaving ? (
+                <>
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <IconCheck />
+                  Save categories
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-3">
+          {categories.length === 0 && (
+            <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 py-12">
+              <p className="text-sm text-gray-400">No categories yet</p>
+            </div>
+          )}
+          {categories.map((cat) => (
+            <div key={cat.id} className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+              <input
+                type="text"
+                value={cat.name}
+                onChange={(e) => {
+                  const name = e.target.value;
+                  setCategories(categories.map((c) => c.id === cat.id ? { ...c, name, slug: slugify(name) } : c));
+                }}
+                placeholder="Category name"
+                className="flex-1 rounded-xl border border-gray-100 bg-gray-50/50 px-4 py-2.5 text-sm text-gray-900 outline-none transition focus:border-[#155dfc] focus:ring-2 focus:ring-[#155dfc]/10"
+              />
+              <span className="text-xs text-gray-400 font-mono">{cat.slug || "slug"}</span>
+              <button
+                onClick={() => removeCategory(cat.id)}
+                className="rounded-lg p-2 text-gray-300 transition hover:bg-red-50 hover:text-red-500"
+              >
+                <IconTrash />
+              </button>
+            </div>
+          ))}
+        </div>
+        <Toast {...toast} />
+      </div>
+    );
+  }
+
+  /* ── Post Editor View ── */
+  if (view === "editor" && editingPost) {
+    return (
+      <div className="flex flex-col gap-6">
+        <div className="flex items-start justify-between">
+          <div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => { setView("list"); setEditingPost(null); }}
+                className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 transition"
+              >
+                <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none"><path d="M12 4l-6 6 6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                Back
+              </button>
+              <h2 className="text-xl font-bold text-gray-900">
+                {editingPost.id === 0 ? "New Post" : "Edit Post"}
+              </h2>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setEditingPost({ ...editingPost, status: editingPost.status === "draft" ? "published" : "draft" })}
+              className={`inline-flex items-center gap-1.5 rounded-xl border px-4 py-2.5 text-sm font-medium shadow-sm transition ${
+                editingPost.status === "published"
+                  ? "border-green-200 bg-green-50 text-green-700 hover:bg-green-100"
+                  : "border-gray-200 bg-white text-gray-500 hover:bg-gray-50"
+              }`}
+            >
+              {editingPost.status === "published" ? "Published" : "Draft"}
+            </button>
+            <button
+              onClick={savePost}
+              disabled={saving}
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#155dfc] px-5 py-2.5 text-sm font-medium text-white shadow-sm shadow-[#155dfc]/20 transition hover:bg-[#1447e6] disabled:opacity-50"
+            >
+              {saving ? (
+                <>
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <IconCheck />
+                  {editingPost.id === 0 ? "Create post" : "Update post"}
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-3 gap-6">
+          {/* Main content */}
+          <div className="col-span-2 flex flex-col gap-5">
+            <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm flex flex-col gap-5">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">Title</label>
+                <input
+                  type="text"
+                  value={editingPost.title}
+                  onChange={(e) => setEditingPost({ ...editingPost, title: e.target.value, slug: slugify(e.target.value) })}
+                  placeholder="Post title"
+                  className="rounded-xl border border-gray-100 bg-gray-50/50 px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-[#155dfc] focus:ring-2 focus:ring-[#155dfc]/10"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">Slug</label>
+                <input
+                  type="text"
+                  value={editingPost.slug}
+                  onChange={(e) => setEditingPost({ ...editingPost, slug: e.target.value })}
+                  placeholder="post-url-slug"
+                  className="rounded-xl border border-gray-100 bg-gray-50/50 px-4 py-3 font-mono text-xs text-gray-600 outline-none transition focus:border-[#155dfc] focus:ring-2 focus:ring-[#155dfc]/10"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">Excerpt</label>
+                <textarea
+                  value={editingPost.excerpt}
+                  onChange={(e) => setEditingPost({ ...editingPost, excerpt: e.target.value })}
+                  rows={2}
+                  placeholder="Short description for listing pages..."
+                  className="w-full resize-none rounded-xl border border-gray-100 bg-gray-50/50 px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-[#155dfc] focus:ring-2 focus:ring-[#155dfc]/10"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">Content</label>
+                <textarea
+                  value={editingPost.content}
+                  onChange={(e) => setEditingPost({ ...editingPost, content: e.target.value })}
+                  rows={16}
+                  placeholder="Write your blog post content here... Supports HTML tags for formatting."
+                  className="w-full resize-y rounded-xl border border-gray-100 bg-gray-50/50 px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-[#155dfc] focus:ring-2 focus:ring-[#155dfc]/10 font-mono leading-relaxed"
+                />
+                <p className="text-xs text-gray-400">
+                  You can use HTML tags for formatting: &lt;h2&gt;, &lt;h3&gt;, &lt;p&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;ul&gt;, &lt;ol&gt;, &lt;li&gt;, &lt;a&gt;, &lt;img&gt;
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <div className="flex flex-col gap-5">
+            <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm flex flex-col gap-4">
+              <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">Featured Image</label>
+              <ImageUpload
+                currentSrc={editingPost.image}
+                onUpload={(url) => setEditingPost({ ...editingPost, image: url })}
+              />
+            </div>
+
+            <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm flex flex-col gap-4">
+              <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">Category</label>
+              <select
+                value={editingPost.categoryId ?? ""}
+                onChange={(e) => setEditingPost({ ...editingPost, categoryId: e.target.value ? Number(e.target.value) : null })}
+                className="rounded-xl border border-gray-100 bg-gray-50/50 px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-[#155dfc] focus:ring-2 focus:ring-[#155dfc]/10"
+              >
+                <option value="">No category</option>
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+        <Toast {...toast} />
+      </div>
+    );
+  }
+
+  /* ── Posts List View ── */
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="flex items-start justify-between">
+        <div>
+          <h2 className="text-xl font-bold text-gray-900">Blog</h2>
+          <p className="mt-1 text-sm text-gray-500">
+            {posts.length} post{posts.length !== 1 ? "s" : ""} — manage your blog content
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setView("categories")}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50"
+          >
+            <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none"><path d="M3 7h14M3 13h14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/><circle cx="7" cy="7" r="1.5" fill="currentColor"/><circle cx="13" cy="13" r="1.5" fill="currentColor"/></svg>
+            Categories
+          </button>
+          <button
+            onClick={openNewPost}
+            className="inline-flex items-center gap-1.5 rounded-xl bg-[#155dfc] px-5 py-2.5 text-sm font-medium text-white shadow-sm shadow-[#155dfc]/20 transition hover:bg-[#1447e6]"
+          >
+            <IconPlus />
+            New post
+          </button>
+        </div>
+      </div>
+
+      {posts.length === 0 ? (
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 py-16">
+          <div className="text-gray-300 mb-3">
+            <IconBlog />
+          </div>
+          <p className="text-sm font-medium text-gray-400">No blog posts yet</p>
+          <p className="mt-1 text-xs text-gray-300">Create your first post to get started</p>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {posts.map((post) => (
+            <div
+              key={post.id}
+              className="flex items-center gap-4 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition hover:shadow-md"
+            >
+              {/* Thumbnail */}
+              <div className="h-16 w-24 shrink-0 overflow-hidden rounded-xl bg-gray-100">
+                {post.image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={post.image} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-gray-300">
+                    <IconBlog />
+                  </div>
+                )}
+              </div>
+
+              {/* Info */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm font-semibold text-gray-900 truncate">
+                    {post.title || "Untitled"}
+                  </h3>
+                  <span className={`inline-block shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
+                    post.status === "published"
+                      ? "bg-green-50 text-green-600"
+                      : "bg-gray-100 text-gray-400"
+                  }`}>
+                    {post.status}
+                  </span>
+                </div>
+                <p className="mt-0.5 text-xs text-gray-400 truncate">
+                  {getCategoryName(post.categoryId)} · {post.createdAt ? new Date(post.createdAt).toLocaleDateString() : "—"}
+                </p>
+                {post.excerpt && (
+                  <p className="mt-1 text-xs text-gray-500 truncate">{post.excerpt}</p>
+                )}
+              </div>
+
+              {/* Actions */}
+              <div className="flex shrink-0 gap-1">
+                <button
+                  onClick={() => openEditPost(post)}
+                  className="rounded-lg p-2 text-gray-400 transition hover:bg-[#155dfc]/10 hover:text-[#155dfc]"
+                  title="Edit"
+                >
+                  <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none"><path d="M13.586 3.586a2 2 0 112.828 2.828l-8.793 8.793-3.536.707.707-3.536 8.793-8.793z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </button>
+                <button
+                  onClick={() => deletePost(post.id)}
+                  className="rounded-lg p-2 text-gray-300 transition hover:bg-red-50 hover:text-red-500"
+                  title="Delete"
+                >
+                  <IconTrash />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      <Toast {...toast} />
+    </div>
+  );
+}
+
 /* ─── Tools & Settings Manager ─── */
 interface SiteSettings {
   backToTop: boolean;
@@ -1303,6 +1750,11 @@ interface SiteSettings {
   recaptchaEnabled: boolean;
   claudeApiKey: string;
   claudeEnabled: boolean;
+  facebookPixelId: string;
+  googleTagId: string;
+  googleAnalyticsId: string;
+  customHeadCode: string;
+  blogEnabled: boolean;
 }
 
 interface LinkResult {
@@ -1320,7 +1772,7 @@ const LINK_STATUS_STYLE = {
   error: { bg: "bg-gray-50", text: "text-gray-700", dot: "bg-gray-400", label: "Error" },
 };
 
-function ToolsManager() {
+function ToolsManager({ onBlogToggle }: { onBlogToggle: (v: boolean) => void }) {
   const [settings, setSettings] = useState<SiteSettings>({
     backToTop: true,
     recaptchaSiteKey: "",
@@ -1328,6 +1780,11 @@ function ToolsManager() {
     recaptchaEnabled: false,
     claudeApiKey: "",
     claudeEnabled: false,
+    facebookPixelId: "",
+    googleTagId: "",
+    googleAnalyticsId: "",
+    customHeadCode: "",
+    blogEnabled: false,
   });
   const [saving, setSaving] = useState(false);
   const [linkResults, setLinkResults] = useState<LinkResult[]>([]);
@@ -1346,6 +1803,7 @@ function ToolsManager() {
       body: JSON.stringify(settings),
     });
     setSaving(false);
+    onBlogToggle(settings.blogEnabled);
     showToast("Settings saved successfully");
   }
 
@@ -1397,6 +1855,96 @@ function ToolsManager() {
               } mt-1`}
             />
           </button>
+        </div>
+      </div>
+
+      {/* Tracking & Analytics */}
+      <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+        <div className="mb-5">
+          <h3 className="text-sm font-semibold text-gray-900">Tracking & Analytics</h3>
+          <p className="mt-0.5 text-xs text-gray-500">Add Facebook Pixel, Google Tag Manager, Google Analytics, and custom scripts</p>
+        </div>
+
+        <div className="flex flex-col gap-5">
+          {/* Facebook Pixel */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+              Facebook Pixel ID
+            </label>
+            <div className="flex items-center gap-2">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#1877F2]/10">
+                <svg className="h-4 w-4 text-[#1877F2]" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+              </div>
+              <input
+                type="text"
+                value={settings.facebookPixelId}
+                onChange={(e) => setSettings({ ...settings, facebookPixelId: e.target.value })}
+                placeholder="e.g. 123456789012345"
+                className="flex-1 rounded-xl border border-gray-100 bg-gray-50/50 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-300 outline-none transition focus:border-[#155dfc] focus:ring-2 focus:ring-[#155dfc]/10"
+              />
+            </div>
+          </div>
+
+          {/* Google Tag Manager */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+              Google Tag Manager ID
+            </label>
+            <div className="flex items-center gap-2">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#4285F4]/10">
+                <svg className="h-4 w-4 text-[#4285F4]" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0L1.608 6v12L12 24l10.392-6V6L12 0zm-1.2 17.64L6 14.04V9.96l4.8 3.6v4.08zm1.2-5.28L7.2 8.76l4.8-3.6 4.8 3.6-4.8 3.6zm6 1.68l-4.8 3.6v-4.08l4.8-3.6v4.08z"/>
+                </svg>
+              </div>
+              <input
+                type="text"
+                value={settings.googleTagId}
+                onChange={(e) => setSettings({ ...settings, googleTagId: e.target.value })}
+                placeholder="e.g. GTM-XXXXXXX"
+                className="flex-1 rounded-xl border border-gray-100 bg-gray-50/50 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-300 outline-none transition focus:border-[#155dfc] focus:ring-2 focus:ring-[#155dfc]/10"
+              />
+            </div>
+          </div>
+
+          {/* Google Analytics */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+              Google Analytics ID
+            </label>
+            <div className="flex items-center gap-2">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#E37400]/10">
+                <svg className="h-4 w-4 text-[#E37400]" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M22.84 2.998V20.99c0 .558-.176 1.028-.527 1.395A1.87 1.87 0 0120.87 23a1.87 1.87 0 01-1.443-.616 2.017 2.017 0 01-.527-1.395V2.998c0-.557.175-1.027.527-1.394A1.869 1.869 0 0120.87 1c.557 0 1.038.201 1.443.604.351.367.527.837.527 1.394zm-8.42 8.997v8.993c0 .558-.176 1.028-.527 1.395a1.87 1.87 0 01-1.443.616 1.87 1.87 0 01-1.443-.616 2.017 2.017 0 01-.527-1.395v-8.993c0-.558.175-1.028.527-1.395A1.869 1.869 0 0112.45 10c.557 0 1.038.2 1.443.6.351.367.527.837.527 1.395zM6 17.994v2.998c0 .557-.176 1.027-.527 1.394A1.869 1.869 0 014.03 23a1.87 1.87 0 01-1.443-.614A2.017 2.017 0 012.06 21v-3.006c0-.558.176-1.028.527-1.395A1.869 1.869 0 014.03 16c.557 0 1.038.2 1.443.6.351.366.527.836.527 1.394z"/>
+                </svg>
+              </div>
+              <input
+                type="text"
+                value={settings.googleAnalyticsId}
+                onChange={(e) => setSettings({ ...settings, googleAnalyticsId: e.target.value })}
+                placeholder="e.g. G-XXXXXXXXXX"
+                className="flex-1 rounded-xl border border-gray-100 bg-gray-50/50 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-300 outline-none transition focus:border-[#155dfc] focus:ring-2 focus:ring-[#155dfc]/10"
+              />
+            </div>
+          </div>
+
+          {/* Custom Head Code */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+              Custom Head Code
+            </label>
+            <textarea
+              value={settings.customHeadCode}
+              onChange={(e) => setSettings({ ...settings, customHeadCode: e.target.value })}
+              rows={4}
+              placeholder="Paste any custom &lt;script&gt; or &lt;meta&gt; tags here..."
+              className="w-full resize-none rounded-xl border border-gray-100 bg-gray-50/50 px-4 py-3 font-mono text-xs text-gray-700 placeholder-gray-300 outline-none transition focus:border-[#155dfc] focus:ring-2 focus:ring-[#155dfc]/10"
+            />
+            <p className="text-xs text-gray-400">
+              This code will be injected into the &lt;head&gt; of every page. Use for additional tracking pixels, verification tags, etc.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -1502,6 +2050,28 @@ function ToolsManager() {
             </p>
           </div>
         )}
+      </div>
+
+      {/* Blog Module */}
+      <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+        <div className="flex items-center justify-between mb-2">
+          <div>
+            <h3 className="text-sm font-semibold text-gray-900">Blog Module</h3>
+            <p className="mt-0.5 text-xs text-gray-500">Enable blog with posts, categories, and public pages. Adds &quot;Blog&quot; to the navigation menu and a Blog tab in admin.</p>
+          </div>
+          <button
+            onClick={() => setSettings({ ...settings, blogEnabled: !settings.blogEnabled })}
+            className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full transition-colors ${
+              settings.blogEnabled ? "bg-[#155dfc]" : "bg-gray-200"
+            }`}
+          >
+            <span
+              className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition-transform ${
+                settings.blogEnabled ? "translate-x-6" : "translate-x-1"
+              } mt-1`}
+            />
+          </button>
+        </div>
       </div>
 
       {/* Save */}
@@ -1905,6 +2475,7 @@ const allTabs = [
   { key: "services" as const, label: "Services", icon: IconServices, minRole: "admin" as const },
   { key: "logos" as const, label: "Logos", icon: IconLogos, minRole: "admin" as const },
   { key: "site-info" as const, label: "Site Info", icon: IconSettings, minRole: "admin" as const },
+  { key: "blog" as const, label: "Blog", icon: IconBlog, minRole: "admin" as const },
   { key: "tools" as const, label: "Tools", icon: IconTools, minRole: "superadmin" as const },
   { key: "users" as const, label: "Users", icon: IconUsers, minRole: "superadmin" as const },
   { key: "ai" as const, label: "AI Assistant", icon: IconAI, minRole: "superadmin" as const },
@@ -1917,6 +2488,7 @@ export default function AdminPage() {
   const [authenticated, setAuthenticated] = useState<boolean | null>(null);
   const [role, setRole] = useState<Role | null>(null);
   const [tab, setTab] = useState<Tab>("messages");
+  const [blogEnabled, setBlogEnabled] = useState(false);
 
   useEffect(() => {
     fetch("/api/auth")
@@ -1925,6 +2497,9 @@ export default function AdminPage() {
         setAuthenticated(data.authenticated);
         setRole(data.role || null);
       });
+    fetch("/api/settings")
+      .then((r) => r.json())
+      .then((data) => setBlogEnabled(!!data.blogEnabled));
   }, []);
 
   async function logout() {
@@ -1947,9 +2522,10 @@ export default function AdminPage() {
     }} />;
   }
 
-  const visibleTabs = allTabs.filter((t) =>
-    t.minRole === "admin" || role === "superadmin"
-  );
+  const visibleTabs = allTabs.filter((t) => {
+    if (t.key === "blog" && !blogEnabled) return false;
+    return t.minRole === "admin" || role === "superadmin";
+  });
 
   return (
     <div className="flex min-h-screen bg-[#f8f9fb]">
@@ -2032,7 +2608,8 @@ export default function AdminPage() {
           {tab === "services" && <ServicesManager />}
           {tab === "logos" && <LogosManager />}
           {tab === "site-info" && <SiteInfoManager />}
-          {tab === "tools" && role === "superadmin" && <ToolsManager />}
+          {tab === "blog" && <BlogManager />}
+          {tab === "tools" && role === "superadmin" && <ToolsManager onBlogToggle={setBlogEnabled} />}
           {tab === "users" && role === "superadmin" && <UsersManager />}
           {tab === "ai" && role === "superadmin" && <AIAssistant />}
         </div>

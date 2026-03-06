@@ -4,5 +4,10 @@
   "recaptchaSecretKey": "",
   "recaptchaEnabled": false,
   "claudeApiKey": "",
-  "claudeEnabled": false
+  "claudeEnabled": false,
+  "facebookPixelId": "",
+  "googleTagId": "",
+  "googleAnalyticsId": "",
+  "customHeadCode": "",
+  "blogEnabled": false
 }
